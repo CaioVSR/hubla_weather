@@ -19,6 +19,7 @@ dependencies:
   bloc: ^9.2.0
   bloc_presentation: ^1.1.2
   equatable: ^2.0.8
+  json_annotation: ^4.9.0
   dio: ^5.9.1
   hive_ce: ^2.19.3
   hive_ce_flutter: ^2.3.4
