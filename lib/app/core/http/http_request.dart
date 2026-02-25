@@ -35,4 +35,10 @@ abstract class HttpRequest {
 
   /// Additional headers for this specific request.
   Map<String, String> get headers => const {};
+
+  /// Whether responses to this request should be cached locally.
+  ///
+  /// Defaults to `false`. Override to `true` in subclasses whose responses
+  /// should be stored for offline-first access.
+  bool get isCacheable => false;
 }

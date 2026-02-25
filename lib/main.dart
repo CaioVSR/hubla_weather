@@ -3,10 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:hubla_weather/app/core/design_system/themes/hubla_themes.dart';
 import 'package:hubla_weather/app/core/di/service_locator.dart';
 import 'package:hubla_weather/app/core/l10n/generated/app_localizations.dart';
+import 'package:hubla_weather/app/core/services/storage_service.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
+  await serviceLocator<StorageService>().init();
   runApp(const HublaWeatherApp());
 }
 
