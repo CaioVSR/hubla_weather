@@ -2,7 +2,7 @@
 ///
 /// Subclasses represent specific failure modes (network, serialization, etc.).
 /// Used as the error type in `Result<AppError, T>`.
-sealed class AppError {
+abstract class AppError {
   const AppError({
     required this.errorMessage,
     this.statusCode,

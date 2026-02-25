@@ -1,6 +1,7 @@
 import 'package:bloc_presentation/bloc_presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hubla_weather/app/core/design_system/widgets/hubla_dialog.dart';
 import 'package:hubla_weather/app/core/design_system/widgets/hubla_loading.dart';
 import 'package:hubla_weather/app/core/design_system/widgets/hubla_primary_button.dart';
@@ -13,6 +14,7 @@ import 'package:hubla_weather/app/core/l10n/generated/app_localizations.dart';
 import 'package:hubla_weather/app/presentation/pages/auth/sign_in/cubit/sign_in_cubit.dart';
 import 'package:hubla_weather/app/presentation/pages/auth/sign_in/cubit/sign_in_presentation_event.dart';
 import 'package:hubla_weather/app/presentation/pages/auth/sign_in/cubit/sign_in_state.dart';
+import 'package:hubla_weather/app/presentation/routing/hubla_route.dart';
 
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});
@@ -33,7 +35,7 @@ class SignInPage extends StatelessWidget {
           title: AppLocalizations.of(context).error,
           message: errorMessage,
         ),
-        SuccessEvent() => () {},
+        SuccessEvent() => context.go(HublaRoute.cities.path),
       },
       child: BlocBuilder<SignInCubit, SignInState>(
         builder: (context, state) => Scaffold(

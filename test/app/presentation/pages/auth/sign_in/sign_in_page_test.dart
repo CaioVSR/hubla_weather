@@ -2,6 +2,7 @@ import 'package:bloc_presentation_test/bloc_presentation_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hubla_weather/app/core/design_system/widgets/hubla_dialog.dart';
 import 'package:hubla_weather/app/core/design_system/widgets/hubla_loading.dart';
 import 'package:hubla_weather/app/core/design_system/widgets/hubla_primary_button.dart';
@@ -10,6 +11,7 @@ import 'package:hubla_weather/app/presentation/pages/auth/sign_in/cubit/sign_in_
 import 'package:hubla_weather/app/presentation/pages/auth/sign_in/cubit/sign_in_presentation_event.dart';
 import 'package:hubla_weather/app/presentation/pages/auth/sign_in/cubit/sign_in_state.dart';
 import 'package:hubla_weather/app/presentation/pages/auth/sign_in/sign_in_page.dart';
+import 'package:hubla_weather/app/presentation/routing/hubla_route.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../../helpers/google_fonts_mocks.dart';
@@ -166,6 +168,29 @@ void main() {
         expect(find.byType(HublaDialog), findsOneWidget);
         expect(find.text('Error'), findsOneWidget);
         expect(find.text('Something went wrong'), findsOneWidget);
+      });
+
+      testWidgets('should navigate to cities route when SuccessEvent is emitted', (tester) async {
+        // ignore: close_sinks
+        final presentationController = whenListenPresentation(mockCubit);
+
+        await pumpAppWithRouter<SignInCubit>(
+          tester,
+          const SignInPage(),
+          cubit: mockCubit,
+          initialRoute: HublaRoute.login.path,
+          routes: [
+            GoRoute(
+              path: HublaRoute.cities.path,
+              builder: (_, _) => const Scaffold(body: Text('Cities Page')),
+            ),
+          ],
+        );
+
+        presentationController.add(SuccessEvent());
+        await tester.pumpAndSettle();
+
+        expect(find.text('Cities Page'), findsOneWidget);
       });
     });
   });
