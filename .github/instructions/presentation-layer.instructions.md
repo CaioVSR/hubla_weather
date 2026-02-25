@@ -96,6 +96,7 @@ class ErrorEvent extends Equatable implements FeaturePresentationEvent {
 ## Pages
 
 - Cubits are **NEVER** provided inside page widgets — always in the Route/Router configuration
+- Cubits are **NEVER** registered in the service locator — instantiate them directly in the route's `BlocProvider.create` callback
 - Use `BlocProvider` at the route level, not inside the page `build` method
 - Keep pages as thin UI shells: delegate logic to cubits, delegate reusable UI to widget files
 
