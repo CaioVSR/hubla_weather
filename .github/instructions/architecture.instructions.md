@@ -2,9 +2,9 @@
 applyTo: "lib/**"
 ---
 
-<!-- Version: 1.1.0 -->
+<!-- Version: 1.2.0 -->
 
-# Architecture (v1.1.0)
+# Architecture (v1.2.0)
 
 ## Clean Architecture with Feature-Based Organization
 
@@ -37,7 +37,10 @@ lib/app/core/
 ├── services/                 # Cross-cutting services
 │   ├── connectivity_service.dart
 │   └── storage_service.dart
-├── theme/                    # AppTheme, colors, text styles
+├── design_system/            # Design tokens, themes, animation, barrel file
+│   ├── tokens/               # ThemeExtension contracts (colors, spacing, etc.)
+│   ├── themes/               # Concrete values + HublaThemes orchestrator
+│   └── animation/            # Static duration/curve constants
 └── l10n/                     # Localization setup
 ```
 
