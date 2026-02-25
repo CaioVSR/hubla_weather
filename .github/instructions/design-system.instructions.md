@@ -2,9 +2,9 @@
 applyTo: "lib/app/core/design_system/**"
 ---
 
-<!-- Version: 1.0.0 -->
+<!-- Version: 1.2.0 -->
 
-# Design System (v1.0.0)
+# Design System (v1.2.0)
 
 ## Overview
 
@@ -17,6 +17,7 @@ lib/app/core/design_system/
 ├── tokens/           # Abstract contracts (ThemeExtension classes)
 ├── themes/           # Concrete values + orchestrator (HublaThemes)
 ├── animation/        # Static duration/curve constants
+├── widgets/          # Reusable design system widgets
 └── design_system.dart  # Barrel file (single import)
 ```
 
@@ -135,6 +136,129 @@ The Hubla palette is organized into groups:
 - **Don't** create new `TextStyle` with hardcoded `fontFamily` — use `context.hublaTextStyles`
 - **Don't** use `Colors.red`, `Colors.blue`, etc. — use semantic colors (`danger`, `info`)
 - **Don't** make `HublaTypographyTheme` const — `GoogleFonts` returns non-const TextStyle
+
+## Widgets
+
+Reusable widgets that consume design tokens live in `lib/app/core/design_system/widgets/`. They are exported via the barrel file.
+
+### Available Widgets
+
+| Widget | File | Description |
+|--------|------|-------------|
+| `HublaTextInput` | `widgets/hubla_text_input.dart` | Themed `TextFormField` with label, hint, prefix/suffix icons, obscure text, error text, keyboard type, controller |
+| `HublaPrimaryButton` | `widgets/hubla_primary_button.dart` | Full-width sky-blue button with loading spinner, disabled state, optional prefix icon |
+| `HublaLoading` | `widgets/hubla_loading.dart` | Full-screen loading overlay with weather-icon drop animation. Static `show`/`hide` API. |
+| `HublaDialog` | `widgets/hubla_dialog.dart` | Themed dialog with icon badge, title, message, and one or two action buttons. Supports error, warning, info, success, and confirm variants. |
+
+### `HublaTextInput`
+
+```dart
+HublaTextInput(
+  label: l10n.email,
+  controller: emailController,
+  keyboardType: TextInputType.emailAddress,
+  autocorrect: false,
+  textInputAction: TextInputAction.next,
+  prefixIcon: Icon(Icons.email_outlined, color: colors.gray50),
+  errorText: 'Invalid email', // pass null to hide
+)
+```
+
+**Parameters:**
+- `label` (required) — field label text
+- `hint` — placeholder text
+- `prefixIcon` / `suffixIcon` — leading/trailing icon widgets
+- `obscureText` — hide text (for passwords)
+- `errorText` — inline error; pass `null` to hide
+- `keyboardType` — e.g., `TextInputType.emailAddress`
+- `onChanged` — value change callback
+- `controller` — `TextEditingController`
+- `enabled` — whether the field is interactive
+- `autocorrect` — enable/disable autocorrect
+- `textInputAction` — keyboard action button
+
+### `HublaPrimaryButton`
+
+```dart
+HublaPrimaryButton(
+  label: l10n.signIn,
+  onPressed: () => cubit.signIn(),
+  isLoading: state.isLoading,
+  isEnabled: state.hasValidInput,
+  prefixIcon: Icon(Icons.login, color: colors.white),
+)
+```
+
+**Parameters:**
+- `label` (required) — button text
+- `onPressed` (required) — tap callback; pass `null` to disable
+- `isLoading` — shows a spinner and disables the button
+- `isEnabled` — explicitly enable/disable
+- `prefixIcon` — optional leading icon
+
+### `HublaLoading`
+
+Show/hide a full-screen loading overlay with animated weather icons. Uses a named-route guard to prevent duplicate dialogs.
+
+```dart
+// Show
+HublaLoading.show(context);
+
+// Hide
+HublaLoading.hide(context);
+```
+
+**Static methods:**
+- `show(BuildContext context)` — pushes the loading overlay as a dialog; no-op if already showing
+- `hide(BuildContext context)` — pops the overlay; no-op if not showing
+
+### `HublaDialog`
+
+Themed alert dialog with an icon badge, title, message, and action buttons. Five convenience constructors cover common scenarios.
+
+```dart
+// Single-button variants
+HublaDialog.showError(context, title: l10n.error, message: 'Something went wrong');
+HublaDialog.showWarning(context, title: l10n.warning, message: 'Check your input');
+HublaDialog.showInfo(context, title: l10n.info, message: 'FYI');
+HublaDialog.showSuccess(context, title: l10n.success, message: 'Done!');
+
+// Two-button confirm
+HublaDialog.showConfirm(
+  context,
+  title: 'Delete?',
+  message: 'This cannot be undone.',
+  primaryLabel: l10n.confirm,
+  secondaryLabel: l10n.cancel,
+  onPrimary: () => cubit.delete(),
+);
+```
+
+**Static methods (single-button):**
+- `showError` / `showWarning` / `showInfo` / `showSuccess`
+  - `context` (required)
+  - `title` (required) — dialog title
+  - `message` (required) — body text
+  - `buttonLabel` — override the default "OK" label
+  - `onPressed` — callback when the button is tapped (pops by default)
+
+**Static method (two-button):**
+- `showConfirm`
+  - `context` (required)
+  - `title` (required) — dialog title
+  - `message` (required) — body text
+  - `primaryLabel` — label for the primary (right) button
+  - `secondaryLabel` — label for the secondary (left) button
+  - `onPrimary` — callback for the primary button
+  - `onSecondary` — callback for the secondary button (pops by default)
+
+### Adding New Widgets
+
+1. Create the widget file in `lib/app/core/design_system/widgets/`
+2. Use **only** design tokens (colors, spacing, shape, typography, animation) — no hardcoded values
+3. Export it in the barrel file (`design_system.dart`)
+4. **Update this instruction file** — add it to the "Available Widgets" table and document its parameters
+5. Bump the version of this file
 
 ## Adding New Tokens
 

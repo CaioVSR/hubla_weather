@@ -233,6 +233,7 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/*.gen.dart"
+    - "route_example/**"
 
 dart_code_linter:
   metrics-exclude:

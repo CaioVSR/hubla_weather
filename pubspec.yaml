@@ -41,4 +41,5 @@ dev_dependencies:
   hive_ce_generator: ^1.10.0
 
 flutter:
+  generate: true
   uses-material-design: true

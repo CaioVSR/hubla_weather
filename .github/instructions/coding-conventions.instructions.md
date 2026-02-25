@@ -2,9 +2,9 @@
 applyTo: "lib/**,test/**"
 ---
 
-<!-- Version: 1.2.0 -->
+<!-- Version: 1.3.0 -->
 
-# Coding Conventions (v1.2.0)
+# Coding Conventions (v1.3.0)
 
 ## General
 
@@ -55,6 +55,13 @@ applyTo: "lib/**,test/**"
 - Use `late` for private fields that are initialized before first access (e.g., in `initState`) — the linter enforces `use_late_for_private_fields_and_variables`
 - Prefer nullable (`Type?`) over `late` for fields that may or may not be initialized
 - Never use `late` on public fields — use nullable + null check instead
+
+## Widgets
+
+- **Never return widgets from functions/methods** — extract them into proper `StatelessWidget` or `StatefulWidget` classes instead
+  - Widget-returning functions bypass the framework's element tree diffing, break `const` optimizations, and make code harder to test
+  - Use widget classes even for small UI fragments (e.g., list item builders, form field groups)
+  - The only exception is `builder` callbacks required by framework widgets (e.g., `ListView.builder`, `BlocBuilder`)
 
 ## Generated Files
 

@@ -1,0 +1,108 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Hubla Weather",
+  "@appTitle": { "description": "The app title" },
+
+  "signIn": "Sign In",
+  "@signIn": { "description": "Sign in button label" },
+
+  "welcomeBack": "Welcome back",
+  "@welcomeBack": { "description": "Welcome subtitle on the sign-in page" },
+
+  "signInSubtitle": "Sign in to check the weather",
+  "@signInSubtitle": { "description": "Subtitle on the sign-in page" },
+
+  "email": "Email",
+  "@email": { "description": "Email field label" },
+
+  "password": "Password",
+  "@password": { "description": "Password field label" },
+
+  "invalidEmailOrPassword": "Invalid email or password",
+  "@invalidEmailOrPassword": { "description": "Error shown when login credentials are wrong" },
+
+  "invalidEmailFormat": "Please enter a valid email",
+  "@invalidEmailFormat": { "description": "Error shown when email format is invalid" },
+
+  "passwordRequired": "Password is required",
+  "@passwordRequired": { "description": "Error shown when password is empty" },
+
+  "searchCities": "Search cities",
+  "@searchCities": { "description": "Placeholder for the city search bar" },
+
+  "noResults": "No results",
+  "@noResults": { "description": "Empty state when search finds no cities" },
+
+  "offlineBanner": "You are offline",
+  "@offlineBanner": { "description": "Banner shown when there is no internet connection" },
+
+  "noDataAvailable": "No data available. Connect to the internet to load weather data.",
+  "@noDataAvailable": { "description": "Empty state when there is no cached data and no network" },
+
+  "retry": "Retry",
+  "@retry": { "description": "Retry button label" },
+
+  "forecast": "Forecast",
+  "@forecast": { "description": "Forecast screen title / label" },
+
+  "humidity": "Humidity",
+  "@humidity": { "description": "Humidity label" },
+
+  "windSpeed": "Wind speed",
+  "@windSpeed": { "description": "Wind speed label" },
+
+  "maxTemp": "Max",
+  "@maxTemp": { "description": "Max temperature label" },
+
+  "minTemp": "Min",
+  "@minTemp": { "description": "Min temperature label" },
+
+  "temperatureCelsius": "{value}°C",
+  "@temperatureCelsius": {
+    "description": "Temperature formatted in Celsius",
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+
+  "humidityPercent": "{value}%",
+  "@humidityPercent": {
+    "description": "Humidity formatted as percentage",
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+
+  "windSpeedMs": "{value} m/s",
+  "@windSpeedMs": {
+    "description": "Wind speed formatted in meters per second",
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+
+  "somethingWentWrong": "Something went wrong. Please try again.",
+  "@somethingWentWrong": { "description": "Generic error message" },
+
+  "ok": "OK",
+  "@ok": { "description": "OK button label" },
+
+  "cancel": "Cancel",
+  "@cancel": { "description": "Cancel button label" },
+
+  "confirm": "Confirm",
+  "@confirm": { "description": "Confirm button label" },
+
+  "error": "Error",
+  "@error": { "description": "Error dialog title" },
+
+  "warning": "Warning",
+  "@warning": { "description": "Warning dialog title" },
+
+  "success": "Success",
+  "@success": { "description": "Success dialog title" },
+
+  "info": "Info",
+  "@info": { "description": "Info dialog title" }
+}
