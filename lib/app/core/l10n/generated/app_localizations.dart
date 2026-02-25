@@ -294,6 +294,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cached'**
   String get cachedData;
+
+  /// Title for the sort bottom sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get sortBy;
+
+  /// Sort by city name option label
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get sortName;
+
+  /// Sort by temperature option label
+  ///
+  /// In en, this message translates to:
+  /// **'Temp'**
+  String get sortTemperature;
+
+  /// Sort by wind speed option label
+  ///
+  /// In en, this message translates to:
+  /// **'Wind'**
+  String get sortWind;
+
+  /// Sort by humidity option label
+  ///
+  /// In en, this message translates to:
+  /// **'Humidity'**
+  String get sortHumidity;
+
+  /// Button to clear/reset the sort to default
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearSort;
+
+  /// Ascending sort direction label
+  ///
+  /// In en, this message translates to:
+  /// **'ASC'**
+  String get ascending;
+
+  /// Descending sort direction label
+  ///
+  /// In en, this message translates to:
+  /// **'DESC'**
+  String get descending;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -25,29 +25,29 @@ class OfflineBanner extends StatelessWidget {
         vertical: spacing.xs,
       ),
       decoration: BoxDecoration(
-          color: colors.warningLight,
-          borderRadius: BorderRadius.circular(shape.medium),
-          border: Border.all(
-            color: colors.warning.withValues(alpha: 0.3),
+        color: colors.warningLight,
+        borderRadius: BorderRadius.circular(shape.medium),
+        border: Border.all(
+          color: colors.warning.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.wifi_off_rounded,
+            size: 16,
+            color: colors.warningDark,
           ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.wifi_off_rounded,
-              size: 16,
+          SizedBox(width: spacing.xs),
+          Text(
+            l10n.offlineBanner,
+            style: textStyles.labelMedium.copyWith(
               color: colors.warningDark,
+              fontWeight: FontWeight.w500,
             ),
-            SizedBox(width: spacing.xs),
-            Text(
-              l10n.offlineBanner,
-              style: textStyles.labelMedium.copyWith(
-                color: colors.warningDark,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 }

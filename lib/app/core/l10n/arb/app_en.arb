@@ -116,5 +116,29 @@
   "@liveData": { "description": "Badge label shown when weather data is fresh from the API" },
 
   "cachedData": "Cached",
-  "@cachedData": { "description": "Badge label shown when weather data is served from local cache" }
+  "@cachedData": { "description": "Badge label shown when weather data is served from local cache" },
+
+  "sortBy": "Sort by",
+  "@sortBy": { "description": "Title for the sort bottom sheet" },
+
+  "sortName": "Name",
+  "@sortName": { "description": "Sort by city name option label" },
+
+  "sortTemperature": "Temp",
+  "@sortTemperature": { "description": "Sort by temperature option label" },
+
+  "sortWind": "Wind",
+  "@sortWind": { "description": "Sort by wind speed option label" },
+
+  "sortHumidity": "Humidity",
+  "@sortHumidity": { "description": "Sort by humidity option label" },
+
+  "clearSort": "Clear",
+  "@clearSort": { "description": "Button to clear/reset the sort to default" },
+
+  "ascending": "ASC",
+  "@ascending": { "description": "Ascending sort direction label" },
+
+  "descending": "DESC",
+  "@descending": { "description": "Descending sort direction label" }
 }

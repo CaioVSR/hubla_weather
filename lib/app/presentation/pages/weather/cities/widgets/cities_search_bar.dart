@@ -18,7 +18,7 @@ class CitiesSearchBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Container(
-      margin: EdgeInsets.fromLTRB(spacing.md, spacing.sm, spacing.md, spacing.xs),
+      margin: EdgeInsets.fromLTRB(spacing.md, spacing.sm, spacing.xs, spacing.xs),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(spacing.xl),
         boxShadow: [

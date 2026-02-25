@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_sort_criteria.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_state.dart';
 
 import '../../../../../../factories/entities/city_weather_factory.dart';
@@ -10,6 +11,8 @@ void main() {
 
       expect(state.cities, isEmpty);
       expect(state.searchQuery, isEmpty);
+      expect(state.sortCriteria, CitiesSortCriteria.name);
+      expect(state.isAscending, isTrue);
       expect(state.isLoading, isTrue);
       expect(state.isOffline, isFalse);
       expect(state.hasError, isFalse);
@@ -168,6 +171,140 @@ void main() {
         final b = CitiesState.initial().copyWith(isLoading: false);
 
         expect(a, isNot(equals(b)));
+      });
+
+      test('should include sort fields in equality', () {
+        final a = CitiesState.initial().copyWith(sortCriteria: CitiesSortCriteria.name);
+        final b = CitiesState.initial().copyWith(sortCriteria: CitiesSortCriteria.temperature);
+
+        expect(a, isNot(equals(b)));
+      });
+
+      test('should be equal with same sort fields', () {
+        final a = CitiesState.initial().copyWith(sortCriteria: CitiesSortCriteria.wind, isAscending: false);
+        final b = CitiesState.initial().copyWith(sortCriteria: CitiesSortCriteria.wind, isAscending: false);
+
+        expect(a, equals(b));
+      });
+    });
+
+    group('sorting', () {
+      final saoPaulo = CityWeatherFactory.create(citySlug: 'sao-paulo', temperature: 30, windSpeed: 5, humidity: 80);
+      final rio = CityWeatherFactory.create(citySlug: 'rio-de-janeiro', temperature: 35, windSpeed: 3, humidity: 70);
+      final brasilia = CityWeatherFactory.create(citySlug: 'brasilia', temperature: 25, windSpeed: 7, humidity: 50);
+      final cities = [saoPaulo, rio, brasilia];
+
+      test('should sort by name ascending by default', () {
+        final state = CitiesState.initial().copyWith(cities: cities, isLoading: false);
+
+        final result = state.filteredCities;
+
+        expect(result[0].citySlug, 'brasilia');
+        expect(result[1].citySlug, 'rio-de-janeiro');
+        expect(result[2].citySlug, 'sao-paulo');
+      });
+
+      test('should sort by name descending', () {
+        final state = CitiesState.initial().copyWith(
+          cities: cities,
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.name,
+          isAscending: false,
+        );
+
+        final result = state.filteredCities;
+
+        expect(result[0].citySlug, 'sao-paulo');
+        expect(result[1].citySlug, 'rio-de-janeiro');
+        expect(result[2].citySlug, 'brasilia');
+      });
+
+      test('should sort by temperature descending', () {
+        final state = CitiesState.initial().copyWith(
+          cities: cities,
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.temperature,
+          isAscending: false,
+        );
+
+        final result = state.filteredCities;
+
+        expect(result[0].citySlug, 'rio-de-janeiro');
+        expect(result[1].citySlug, 'sao-paulo');
+        expect(result[2].citySlug, 'brasilia');
+      });
+
+      test('should sort by temperature ascending', () {
+        final state = CitiesState.initial().copyWith(
+          cities: cities,
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.temperature,
+          isAscending: true,
+        );
+
+        final result = state.filteredCities;
+
+        expect(result[0].citySlug, 'brasilia');
+        expect(result[1].citySlug, 'sao-paulo');
+        expect(result[2].citySlug, 'rio-de-janeiro');
+      });
+
+      test('should sort by wind speed descending', () {
+        final state = CitiesState.initial().copyWith(
+          cities: cities,
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.wind,
+          isAscending: false,
+        );
+
+        final result = state.filteredCities;
+
+        expect(result[0].citySlug, 'brasilia');
+        expect(result[1].citySlug, 'sao-paulo');
+        expect(result[2].citySlug, 'rio-de-janeiro');
+      });
+
+      test('should sort by humidity descending', () {
+        final state = CitiesState.initial().copyWith(
+          cities: cities,
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.humidity,
+          isAscending: false,
+        );
+
+        final result = state.filteredCities;
+
+        expect(result[0].citySlug, 'sao-paulo');
+        expect(result[1].citySlug, 'rio-de-janeiro');
+        expect(result[2].citySlug, 'brasilia');
+      });
+
+      test('should apply search filter before sorting', () {
+        final state = CitiesState.initial().copyWith(
+          cities: cities,
+          searchQuery: 'paulo',
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.temperature,
+          isAscending: false,
+        );
+
+        final result = state.filteredCities;
+
+        expect(result.length, 1);
+        expect(result[0].citySlug, 'sao-paulo');
+      });
+
+      test('should preserve sort fields in copyWith', () {
+        final state = CitiesState.initial().copyWith(
+          sortCriteria: CitiesSortCriteria.temperature,
+          isAscending: false,
+        );
+
+        final updated = state.copyWith(searchQuery: 'test');
+
+        expect(updated.sortCriteria, CitiesSortCriteria.temperature);
+        expect(updated.isAscending, false);
+        expect(updated.searchQuery, 'test');
       });
     });
   });

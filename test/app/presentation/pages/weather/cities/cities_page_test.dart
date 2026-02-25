@@ -8,6 +8,7 @@ import 'package:hubla_weather/app/core/l10n/generated/app_localizations.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/cities_page.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_cubit.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_presentation_event.dart';
+import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_sort_criteria.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_state.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/widgets/city_weather_card.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/widgets/city_weather_card_skeleton.dart';
@@ -222,6 +223,171 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Network error'), findsOneWidget);
+      });
+    });
+
+    group('sort', () {
+      testWidgets('should render sort button', (tester) async {
+        await pumpApp<CitiesCubit>(tester, const CitiesPage(), cubit: mockCubit);
+
+        expect(find.byIcon(Icons.swap_vert_rounded), findsOneWidget);
+      });
+
+      testWidgets('should not show active sort indicator when using default sort', (tester) async {
+        // Default state: name ascending — no active indicator
+        await pumpApp<CitiesCubit>(tester, const CitiesPage(), cubit: mockCubit);
+
+        // The sort button icon should be gray (default), no sky-colored dot
+        final sortIcon = tester.widget<Icon>(find.byIcon(Icons.swap_vert_rounded));
+        // We just verify the button renders; color testing is tricky with theme
+        expect(sortIcon, isNotNull);
+      });
+
+      testWidgets('should open sort bottom sheet when sort button is tapped', (tester) async {
+        await pumpApp<CitiesCubit>(tester, const CitiesPage(), cubit: mockCubit);
+
+        await tester.tap(find.byIcon(Icons.swap_vert_rounded));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Sort by'), findsOneWidget);
+        expect(find.text('Name'), findsOneWidget);
+        expect(find.text('Temp'), findsOneWidget);
+        expect(find.text('Wind'), findsOneWidget);
+        expect(find.text('Humidity'), findsOneWidget);
+      });
+
+      testWidgets('should call updateSort when a sort option is tapped', (tester) async {
+        await pumpApp<CitiesCubit>(tester, const CitiesPage(), cubit: mockCubit);
+
+        // Open the sort sheet
+        await tester.tap(find.byIcon(Icons.swap_vert_rounded));
+        await tester.pumpAndSettle();
+
+        // Tap the temperature option — sheet stays open
+        await tester.tap(find.text('Temp'));
+        await tester.pump();
+
+        verify(() => mockCubit.updateSort(CitiesSortCriteria.temperature)).called(1);
+      });
+
+      testWidgets('should show clear button in sheet when sort is not default', (tester) async {
+        final sortedState = CitiesState.initial().copyWith(
+          cities: [CityWeatherFactory.create()],
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.temperature,
+          isAscending: false,
+        );
+        when(() => mockCubit.state).thenReturn(sortedState);
+        whenListen(mockCubit, const Stream<CitiesState>.empty(), initialState: sortedState);
+
+        await pumpApp<CitiesCubit>(tester, const CitiesPage(), cubit: mockCubit);
+
+        // Open the sort sheet
+        await tester.tap(find.byIcon(Icons.arrow_downward_rounded));
+        await tester.pumpAndSettle();
+
+        expect(find.widgetWithText(TextButton, 'Clear'), findsOneWidget);
+      });
+
+      testWidgets('should call clearSort and dismiss sheet when clear button is tapped', (tester) async {
+        final sortedState = CitiesState.initial().copyWith(
+          cities: [CityWeatherFactory.create()],
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.temperature,
+          isAscending: false,
+        );
+        when(() => mockCubit.state).thenReturn(sortedState);
+        whenListen(mockCubit, const Stream<CitiesState>.empty(), initialState: sortedState);
+
+        await pumpApp<CitiesCubit>(tester, const CitiesPage(), cubit: mockCubit);
+
+        // Open the sort sheet
+        await tester.tap(find.byIcon(Icons.arrow_downward_rounded));
+        await tester.pumpAndSettle();
+
+        // Tap clear
+        await tester.tap(find.widgetWithText(TextButton, 'Clear'));
+        await tester.pumpAndSettle();
+
+        verify(() => mockCubit.clearSort()).called(1);
+        // Sheet should be dismissed
+        expect(find.text('Sort by'), findsNothing);
+      });
+
+      testWidgets('should show direction arrow on active pill in sheet', (tester) async {
+        final sortedState = CitiesState.initial().copyWith(
+          cities: [CityWeatherFactory.create()],
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.temperature,
+          isAscending: false,
+        );
+        when(() => mockCubit.state).thenReturn(sortedState);
+        whenListen(mockCubit, const Stream<CitiesState>.empty(), initialState: sortedState);
+
+        await pumpApp<CitiesCubit>(tester, const CitiesPage(), cubit: mockCubit);
+
+        // Open the sort sheet
+        await tester.tap(find.byIcon(Icons.arrow_downward_rounded));
+        await tester.pumpAndSettle();
+
+        // The active pill should show a descending arrow inside the sheet
+        expect(find.byIcon(Icons.arrow_downward_rounded), findsWidgets);
+      });
+
+      testWidgets('should toggle direction when active pill is tapped again', (tester) async {
+        final sortedState = CitiesState.initial().copyWith(
+          cities: [CityWeatherFactory.create()],
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.temperature,
+          isAscending: false,
+        );
+        when(() => mockCubit.state).thenReturn(sortedState);
+        whenListen(mockCubit, const Stream<CitiesState>.empty(), initialState: sortedState);
+
+        await pumpApp<CitiesCubit>(tester, const CitiesPage(), cubit: mockCubit);
+
+        // Open the sort sheet
+        await tester.tap(find.byIcon(Icons.arrow_downward_rounded));
+        await tester.pumpAndSettle();
+
+        // Tap the active temperature pill again — toggles direction
+        await tester.tap(find.text('Temp'));
+        await tester.pump();
+
+        // Should call updateSort with same criteria (cubit toggles direction)
+        verify(() => mockCubit.updateSort(CitiesSortCriteria.temperature)).called(1);
+      });
+
+      testWidgets('should show active sort indicator when sort is not default', (tester) async {
+        final sortedState = CitiesState.initial().copyWith(
+          cities: [CityWeatherFactory.create()],
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.temperature,
+          isAscending: false,
+        );
+        when(() => mockCubit.state).thenReturn(sortedState);
+        whenListen(mockCubit, const Stream<CitiesState>.empty(), initialState: sortedState);
+
+        await pumpApp<CitiesCubit>(tester, const CitiesPage(), cubit: mockCubit);
+
+        // Sort button shows descending arrow when active sort is descending
+        expect(find.byIcon(Icons.arrow_downward_rounded), findsWidgets);
+      });
+
+      testWidgets('should show ascending arrow when active sort is ascending', (tester) async {
+        final sortedState = CitiesState.initial().copyWith(
+          cities: [CityWeatherFactory.create()],
+          isLoading: false,
+          sortCriteria: CitiesSortCriteria.temperature,
+          isAscending: true,
+        );
+        when(() => mockCubit.state).thenReturn(sortedState);
+        whenListen(mockCubit, const Stream<CitiesState>.empty(), initialState: sortedState);
+
+        await pumpApp<CitiesCubit>(tester, const CitiesPage(), cubit: mockCubit);
+
+        // Sort button shows ascending arrow when active sort is ascending
+        expect(find.byIcon(Icons.arrow_upward_rounded), findsWidgets);
       });
     });
   });

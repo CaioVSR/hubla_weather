@@ -115,4 +115,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cachedData => 'Cached';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get sortName => 'Name';
+
+  @override
+  String get sortTemperature => 'Temp';
+
+  @override
+  String get sortWind => 'Wind';
+
+  @override
+  String get sortHumidity => 'Humidity';
+
+  @override
+  String get clearSort => 'Clear';
+
+  @override
+  String get ascending => 'ASC';
+
+  @override
+  String get descending => 'DESC';
 }

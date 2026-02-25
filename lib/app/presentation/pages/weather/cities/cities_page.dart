@@ -9,6 +9,7 @@ import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities
 import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_state.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/widgets/cities_content.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/widgets/cities_search_bar.dart';
+import 'package:hubla_weather/app/presentation/pages/weather/cities/widgets/cities_sort_button.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/widgets/offline_banner.dart';
 
 /// City List screen displaying current weather for 10 Brazilian cities.
@@ -61,7 +62,20 @@ class CitiesPage extends StatelessWidget {
             body: Column(
               children: [
                 if (state.isOffline) const OfflineBanner(),
-                CitiesSearchBar(onChanged: cubit.updateSearchQuery),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: CitiesSearchBar(onChanged: cubit.updateSearchQuery),
+                    ),
+                    CitiesSortButton(
+                      sortCriteria: state.sortCriteria,
+                      isAscending: state.isAscending,
+                      onSort: cubit.updateSort,
+                      onClearSort: cubit.clearSort,
+                    ),
+                  ],
+                ),
                 Expanded(
                   child: CitiesContent(state: state, cubit: cubit),
                 ),

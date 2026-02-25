@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hubla_weather/app/core/services/connectivity_service.dart';
 import 'package:hubla_weather/app/domain/weather/use_cases/get_all_cities_weather_use_case.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_presentation_event.dart';
+import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_sort_criteria.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_state.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
@@ -70,6 +71,23 @@ class CitiesCubit extends Cubit<CitiesState> with BlocPresentationMixin<CitiesSt
 
   /// Updates the search query for local city name filtering.
   void updateSearchQuery(String query) => emit(state.copyWith(searchQuery: query));
+
+  /// Updates the sort criterion for the city list.
+  ///
+  /// If the same criterion is selected again, toggles the sort direction.
+  /// If a new criterion is selected, applies its [CitiesSortCriteria.defaultAscending] direction.
+  void updateSort(CitiesSortCriteria criteria) {
+    if (criteria == state.sortCriteria) {
+      emit(state.copyWith(isAscending: !state.isAscending));
+    } else {
+      emit(state.copyWith(sortCriteria: criteria, isAscending: criteria.defaultAscending));
+    }
+  }
+
+  /// Resets the sort to the default state (name, ascending).
+  void clearSort() {
+    emit(state.copyWith(sortCriteria: CitiesSortCriteria.name, isAscending: true));
+  }
 
   void _onConnectivityChanged(InternetStatus status) {
     final isOffline = status == InternetStatus.disconnected;
