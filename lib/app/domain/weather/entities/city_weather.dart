@@ -19,6 +19,7 @@ class CityWeather extends Equatable {
     required this.windSpeed,
     required this.weather,
     required this.dateTime,
+    this.isStale = false,
   });
 
   factory CityWeather.fromJson(Map<String, dynamic> json) => _$CityWeatherFromJson(json);
@@ -49,6 +50,26 @@ class CityWeather extends Equatable {
   /// Timestamp of the weather observation.
   final DateTime dateTime;
 
+  /// Whether this data is stale (served from cache after a failed refresh).
+  ///
+  /// Runtime-only flag — not persisted to JSON. Set by the repository when
+  /// a remote fetch fails and cached data is returned instead.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final bool isStale;
+
+  /// Returns a copy with [isStale] set to the given value.
+  CityWeather copyWith({bool? isStale}) => CityWeather(
+    citySlug: citySlug,
+    temperature: temperature,
+    temperatureMin: temperatureMin,
+    temperatureMax: temperatureMax,
+    humidity: humidity,
+    windSpeed: windSpeed,
+    weather: weather,
+    dateTime: dateTime,
+    isStale: isStale ?? this.isStale,
+  );
+
   @override
   List<Object?> get props => [
     citySlug,
@@ -59,5 +80,6 @@ class CityWeather extends Equatable {
     windSpeed,
     weather,
     dateTime,
+    isStale,
   ];
 }

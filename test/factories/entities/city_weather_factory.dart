@@ -13,6 +13,7 @@ abstract class CityWeatherFactory {
     double? windSpeed,
     WeatherInfo? weather,
     DateTime? dateTime,
+    bool? isStale,
   }) => CityWeather(
     citySlug: citySlug ?? 'sao-paulo',
     temperature: temperature ?? 25.0,
@@ -22,5 +23,6 @@ abstract class CityWeatherFactory {
     windSpeed: windSpeed ?? 3.5,
     weather: weather ?? WeatherInfoFactory.create(),
     dateTime: dateTime ?? DateTime.utc(2026, 2, 25, 12),
+    isStale: isStale ?? false,
   );
 }

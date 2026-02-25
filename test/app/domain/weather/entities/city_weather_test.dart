@@ -104,5 +104,56 @@ void main() {
         expect(restored, equals(original));
       });
     });
+
+    group('isStale', () {
+      test('should default to false', () {
+        final cityWeather = CityWeatherFactory.create();
+
+        expect(cityWeather.isStale, isFalse);
+      });
+
+      test('should support true value', () {
+        final cityWeather = CityWeatherFactory.create(isStale: true);
+
+        expect(cityWeather.isStale, isTrue);
+      });
+
+      test('should not be serialized to JSON', () {
+        final cityWeather = CityWeatherFactory.create(isStale: true);
+
+        final json = cityWeather.toJson();
+
+        expect(json.containsKey('isStale'), isFalse);
+      });
+
+      test('should default to false when deserialized from JSON', () {
+        final original = CityWeatherFactory.create(isStale: true);
+        final json = original.toJson();
+
+        final deserialized = CityWeather.fromJson(json);
+
+        expect(deserialized.isStale, isFalse);
+      });
+    });
+
+    group('copyWith', () {
+      test('should update isStale', () {
+        final cityWeather = CityWeatherFactory.create();
+
+        final stale = cityWeather.copyWith(isStale: true);
+
+        expect(stale.isStale, isTrue);
+        expect(stale.citySlug, cityWeather.citySlug);
+        expect(stale.temperature, cityWeather.temperature);
+      });
+
+      test('should preserve isStale when not specified', () {
+        final cityWeather = CityWeatherFactory.create(isStale: true);
+
+        final copy = cityWeather.copyWith();
+
+        expect(copy.isStale, isTrue);
+      });
+    });
   });
 }

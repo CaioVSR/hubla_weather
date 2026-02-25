@@ -9,14 +9,26 @@ import 'package:hubla_weather/app/core/services/secure_storage_service.dart';
 import 'package:hubla_weather/app/core/services/storage_service.dart';
 import 'package:hubla_weather/app/data/auth/auth_repository.dart';
 import 'package:hubla_weather/app/data/auth/datasources/local/auth_local_datasource.dart';
+import 'package:hubla_weather/app/data/weather/datasources/local/weather_local_datasource.dart';
+import 'package:hubla_weather/app/data/weather/datasources/remote/weather_remote_datasource.dart';
+import 'package:hubla_weather/app/data/weather/weather_repository.dart';
 import 'package:hubla_weather/app/domain/auth/use_cases/get_session_use_case.dart';
 import 'package:hubla_weather/app/domain/auth/use_cases/sign_in_use_case.dart';
+import 'package:hubla_weather/app/domain/weather/use_cases/get_all_cities_weather_use_case.dart';
 import 'package:hubla_weather/app/presentation/routing/hubla_app_router.dart';
 
 final GetIt serviceLocator = GetIt.instance;
 
 void setupServiceLocator() {
-  // Core services
+  _registerCore();
+  _registerData();
+  _registerDomain();
+  _registerRouter();
+}
+
+// ── Core ──────────────────────────────────────────────────────────────────────
+
+void _registerCore() {
   serviceLocator
     ..registerLazySingleton<LoggerService>(LoggerService.new)
     ..registerLazySingleton<ConnectivityService>(ConnectivityService.new)
@@ -29,22 +41,55 @@ void setupServiceLocator() {
         storageService: serviceLocator(),
       ),
     );
+}
 
-  // Feature: Auth
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+void _registerData() {
   serviceLocator
+    // Auth
     ..registerLazySingleton<AuthLocalDatasource>(
       () => AuthLocalDatasource(secureStorageService: serviceLocator()),
     )
     ..registerLazySingleton<AuthRepository>(
       () => AuthRepository(authLocalDatasource: serviceLocator()),
     )
+    // Weather
+    ..registerLazySingleton<WeatherRemoteDatasource>(
+      () => WeatherRemoteDatasource(client: serviceLocator()),
+    )
+    ..registerLazySingleton<WeatherLocalDatasource>(
+      () => WeatherLocalDatasource(storageService: serviceLocator()),
+    )
+    ..registerLazySingleton<WeatherRepository>(
+      () => WeatherRepository(
+        weatherRemoteDatasource: serviceLocator(),
+        weatherLocalDatasource: serviceLocator(),
+      ),
+    );
+}
+
+// ── Domain ────────────────────────────────────────────────────────────────────
+
+void _registerDomain() {
+  serviceLocator
+    // Auth
     ..registerLazySingleton<SignInUseCase>(
       () => SignInUseCase(authRepository: serviceLocator()),
     )
     ..registerLazySingleton<GetSessionUseCase>(
       () => GetSessionUseCase(authRepository: serviceLocator()),
+    )
+    // Weather
+    ..registerLazySingleton<GetAllCitiesWeatherUseCase>(
+      () => GetAllCitiesWeatherUseCase(weatherRepository: serviceLocator()),
     );
+}
 
-  // Router
-  serviceLocator.registerLazySingleton<GoRouter>(() => createRouter(getSessionUseCase: serviceLocator()));
+// ── Router ────────────────────────────────────────────────────────────────────
+
+void _registerRouter() {
+  serviceLocator.registerLazySingleton<GoRouter>(
+    () => createRouter(getSessionUseCase: serviceLocator()),
+  );
 }
