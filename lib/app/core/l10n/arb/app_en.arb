@@ -104,5 +104,17 @@
   "@success": { "description": "Success dialog title" },
 
   "info": "Info",
-  "@info": { "description": "Info dialog title" }
+  "@info": { "description": "Info dialog title" },
+
+  "cities": "My Cities",
+  "@cities": { "description": "Cities screen app bar title" },
+
+  "staleData": "Data may be outdated",
+  "@staleData": { "description": "Indicator shown when city weather data is from cache after a failed refresh" },
+
+  "liveData": "Live",
+  "@liveData": { "description": "Badge label shown when weather data is fresh from the API" },
+
+  "cachedData": "Cached",
+  "@cachedData": { "description": "Badge label shown when weather data is served from local cache" }
 }

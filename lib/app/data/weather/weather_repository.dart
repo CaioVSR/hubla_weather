@@ -9,6 +9,7 @@ import 'package:hubla_weather/app/domain/weather/errors/weather_error.dart';
 /// Repository that orchestrates weather data fetching and caching.
 ///
 /// Implements an offline-first strategy:
+/// - Resolves city coordinates via geocoding (cached → API → hardcoded fallback)
 /// - Fetches from the remote API in parallel for all cities
 /// - Saves successful responses to local cache
 /// - Falls back to cached data (marked as stale) on per-city errors
@@ -50,7 +51,8 @@ class WeatherRepository {
   /// On failure: returns cached data with [CityWeather.isStale] = true,
   /// or a [FetchWeatherError] if no cache exists.
   Future<Result<WeatherError, CityWeather>> getCityWeather({required City city}) async {
-    final result = await _remoteDatasource.getCurrentWeather(city: city);
+    final resolvedCity = await _resolveCoordinates(city);
+    final result = await _remoteDatasource.getCurrentWeather(city: resolvedCity);
 
     return result.when(
       (error) async {
@@ -71,7 +73,8 @@ class WeatherRepository {
   ///
   /// Returns `null` if both the remote fetch and cache lookup fail.
   Future<CityWeather?> _fetchOrFallback(City city) async {
-    final result = await _remoteDatasource.getCurrentWeather(city: city);
+    final resolvedCity = await _resolveCoordinates(city);
+    final result = await _remoteDatasource.getCurrentWeather(city: resolvedCity);
 
     return result.when(
       (error) async {
@@ -81,6 +84,48 @@ class WeatherRepository {
       (cityWeather) async {
         await _localDatasource.saveCityWeather(cityWeather);
         return cityWeather;
+      },
+    );
+  }
+
+  /// Resolves geographic coordinates for a city.
+  ///
+  /// Resolution order:
+  /// 1. Cached geocoding result (fast, no network)
+  /// 2. Geocoding API call (caches result on success)
+  /// 3. Hardcoded coordinates from [City.latitude] / [City.longitude]
+  Future<City> _resolveCoordinates(City city) async {
+    // 1. Try cached geocoding result
+    final cached = await _localDatasource.getGeocodingResult(city.slug);
+    if (cached != null) {
+      return City(
+        name: city.name,
+        slug: city.slug,
+        latitude: cached.lat,
+        longitude: cached.lon,
+      );
+    }
+
+    // 2. Try geocoding API
+    final geocodeResult = await _remoteDatasource.geocodeCity(
+      cityName: city.name,
+    );
+
+    return geocodeResult.when(
+      // 3. Fallback to hardcoded coordinates
+      (_) => city,
+      (coords) async {
+        await _localDatasource.saveGeocodingResult(
+          citySlug: city.slug,
+          lat: coords.lat,
+          lon: coords.lon,
+        );
+        return City(
+          name: city.name,
+          slug: city.slug,
+          latitude: coords.lat,
+          longitude: coords.lon,
+        );
       },
     );
   }

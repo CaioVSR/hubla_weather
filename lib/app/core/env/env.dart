@@ -11,9 +11,15 @@ abstract final class Env {
 
   static const String environment = String.fromEnvironment('ENVIRONMENT', defaultValue: 'dev');
 
-  static const String openWeatherBaseUrl = String.fromEnvironment('OPEN_WEATHER_BASE_URL');
+  static const String openWeatherBaseUrl = String.fromEnvironment(
+    'OPEN_WEATHER_BASE_URL',
+    defaultValue: 'https://api.openweathermap.org',
+  );
 
-  static const String openWeatherApiKey = String.fromEnvironment('OPEN_WEATHER_API_KEY');
+  static const String openWeatherApiKey = String.fromEnvironment(
+    'OPEN_WEATHER_API_KEY',
+    defaultValue: '52c778bae850bf6e9cb55c4a5a0db591',
+  );
 
   /// Whether the current environment is production.
   static bool get isProduction => environment == 'prod';

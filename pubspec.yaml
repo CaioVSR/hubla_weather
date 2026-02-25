@@ -30,6 +30,7 @@ dependencies:
   google_fonts: ^6.2.1
   logger: ^2.6.2
   meta: ^1.17.0
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

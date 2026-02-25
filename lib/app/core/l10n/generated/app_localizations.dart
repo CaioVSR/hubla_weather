@@ -270,6 +270,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Info'**
   String get info;
+
+  /// Cities screen app bar title
+  ///
+  /// In en, this message translates to:
+  /// **'My Cities'**
+  String get cities;
+
+  /// Indicator shown when city weather data is from cache after a failed refresh
+  ///
+  /// In en, this message translates to:
+  /// **'Data may be outdated'**
+  String get staleData;
+
+  /// Badge label shown when weather data is fresh from the API
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get liveData;
+
+  /// Badge label shown when weather data is served from local cache
+  ///
+  /// In en, this message translates to:
+  /// **'Cached'**
+  String get cachedData;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

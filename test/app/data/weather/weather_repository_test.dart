@@ -23,6 +23,12 @@ void main() {
       weatherRemoteDatasource: mockRemote,
       weatherLocalDatasource: mockLocal,
     );
+
+    // Default: no cached geocoding results, geocoding API fails → uses hardcoded coords
+    when(() => mockLocal.getGeocodingResult(any())).thenAnswer((_) async => null);
+    when(
+      () => mockRemote.geocodeCity(cityName: any(named: 'cityName')),
+    ).thenAnswer((_) async => const Error(NoConnectionError()));
   });
 
   setUpAll(() {
@@ -186,6 +192,80 @@ void main() {
 
         expect(result.isError, isTrue);
         expect(result.getError(), isA<FetchWeatherError>());
+      });
+    });
+
+    group('geocoding resolution', () {
+      test('should use cached geocoding coordinates when available', () async {
+        final city = CityFactory.create();
+        const cachedCoords = (lat: -23.55, lon: -46.63);
+
+        when(() => mockLocal.getGeocodingResult(city.slug)).thenAnswer(
+          (_) async => cachedCoords,
+        );
+        when(() => mockRemote.getCurrentWeather(city: any(named: 'city'))).thenAnswer(
+          (_) async => Success(CityWeatherFactory.create(citySlug: city.slug)),
+        );
+        when(() => mockLocal.saveCityWeather(any())).thenAnswer((_) async {});
+
+        await repository.getCityWeather(city: city);
+
+        verifyNever(
+          () => mockRemote.geocodeCity(cityName: any(named: 'cityName')),
+        );
+      });
+
+      test('should call geocoding API when no cached geocoding exists', () async {
+        final city = CityFactory.create();
+        const geocodedCoords = (lat: -23.5501, lon: -46.6340);
+
+        when(() => mockLocal.getGeocodingResult(city.slug)).thenAnswer(
+          (_) async => null,
+        );
+        when(
+          () => mockRemote.geocodeCity(cityName: city.name),
+        ).thenAnswer((_) async => const Success(geocodedCoords));
+        when(
+          () => mockLocal.saveGeocodingResult(
+            citySlug: any(named: 'citySlug'),
+            lat: any(named: 'lat'),
+            lon: any(named: 'lon'),
+          ),
+        ).thenAnswer((_) async {});
+        when(() => mockRemote.getCurrentWeather(city: any(named: 'city'))).thenAnswer(
+          (_) async => Success(CityWeatherFactory.create(citySlug: city.slug)),
+        );
+        when(() => mockLocal.saveCityWeather(any())).thenAnswer((_) async {});
+
+        await repository.getCityWeather(city: city);
+
+        verify(
+          () => mockLocal.saveGeocodingResult(
+            citySlug: city.slug,
+            lat: geocodedCoords.lat,
+            lon: geocodedCoords.lon,
+          ),
+        ).called(1);
+      });
+
+      test('should fallback to hardcoded coords when geocoding fails', () async {
+        final city = CityFactory.create();
+
+        when(() => mockLocal.getGeocodingResult(city.slug)).thenAnswer(
+          (_) async => null,
+        );
+        when(
+          () => mockRemote.geocodeCity(cityName: city.name),
+        ).thenAnswer((_) async => const Error(NoConnectionError()));
+        when(() => mockRemote.getCurrentWeather(city: city)).thenAnswer(
+          (_) async => Success(CityWeatherFactory.create(citySlug: city.slug)),
+        );
+        when(() => mockLocal.saveCityWeather(any())).thenAnswer((_) async {});
+
+        final result = await repository.getCityWeather(city: city);
+
+        expect(result.isSuccess, isTrue);
+        verify(() => mockRemote.getCurrentWeather(city: city)).called(1);
       });
     });
   });

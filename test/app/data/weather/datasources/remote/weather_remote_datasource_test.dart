@@ -64,6 +64,40 @@ void main() {
         expect(cityWeather.humidity, 65);
         expect(cityWeather.windSpeed, 3.5);
         expect(cityWeather.weather.description, 'clear sky');
+        expect(cityWeather.isStale, isFalse);
+      });
+
+      test('should mark CityWeather as stale when response is from cache', () async {
+        when(() => mockClient.request(any())).thenAnswer(
+          (_) async => const Success(
+            HttpResponse(
+              data: {
+                'main': {
+                  'temp': 25.5,
+                  'temp_min': 20.0,
+                  'temp_max': 30.0,
+                  'humidity': 65,
+                },
+                'wind': {'speed': 3.5},
+                'weather': [
+                  {
+                    'id': 800,
+                    'main': 'Clear',
+                    'description': 'clear sky',
+                    'icon': '01d',
+                  },
+                ],
+                'dt': 1740484800,
+              },
+              isFromCache: true,
+            ),
+          ),
+        );
+
+        final result = await datasource.getCurrentWeather(city: city);
+
+        expect(result.isSuccess, isTrue);
+        expect(result.getSuccess()!.isStale, isTrue);
       });
 
       test('should return Error when HttpClient returns Error', () async {
@@ -83,6 +117,70 @@ void main() {
         );
 
         final result = await datasource.getCurrentWeather(city: city);
+
+        expect(result.isError, isTrue);
+        expect(result.getError(), isA<SerializationError>());
+      });
+    });
+
+    group('geocodeCity', () {
+      test('should return Success with lat/lon on valid response', () async {
+        when(() => mockClient.request(any())).thenAnswer(
+          (_) async => const Success(
+            HttpResponse(
+              data: [
+                {
+                  'name': 'São Paulo',
+                  'lat': -23.5506,
+                  'lon': -46.6340,
+                  'country': 'BR',
+                  'state': 'São Paulo',
+                },
+              ],
+              isFromCache: false,
+            ),
+          ),
+        );
+
+        final result = await datasource.geocodeCity(cityName: 'São Paulo');
+
+        expect(result.isSuccess, isTrue);
+        final coords = result.getSuccess()!;
+        expect(coords.lat, -23.5506);
+        expect(coords.lon, -46.6340);
+      });
+
+      test('should return Error when API returns empty array', () async {
+        when(() => mockClient.request(any())).thenAnswer(
+          (_) async => const Success(
+            HttpResponse(data: <dynamic>[], isFromCache: false),
+          ),
+        );
+
+        final result = await datasource.geocodeCity(cityName: 'Unknown City');
+
+        expect(result.isError, isTrue);
+      });
+
+      test('should return Error when HttpClient returns Error', () async {
+        when(() => mockClient.request(any())).thenAnswer(
+          (_) async => const Error(NoConnectionError()),
+        );
+
+        final result = await datasource.geocodeCity(cityName: 'São Paulo');
+
+        expect(result.isError, isTrue);
+        expect(result.getError(), isA<NoConnectionError>());
+      });
+
+      test('should return SerializationError on malformed response', () async {
+        when(() => mockClient.request(any())).thenAnswer(
+          (_) async => const Success(
+            HttpResponse(data: 'not a list', isFromCache: false),
+          ),
+        );
+
+        final result = await datasource.geocodeCity(cityName: 'São Paulo');
 
         expect(result.isError, isTrue);
         expect(result.getError(), isA<SerializationError>());

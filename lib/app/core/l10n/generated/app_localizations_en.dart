@@ -103,4 +103,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get info => 'Info';
+
+  @override
+  String get cities => 'My Cities';
+
+  @override
+  String get staleData => 'Data may be outdated';
+
+  @override
+  String get liveData => 'Live';
+
+  @override
+  String get cachedData => 'Cached';
 }

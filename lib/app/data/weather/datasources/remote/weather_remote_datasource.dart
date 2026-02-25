@@ -2,6 +2,7 @@ import 'package:hubla_weather/app/core/errors/app_error.dart';
 import 'package:hubla_weather/app/core/errors/result.dart';
 import 'package:hubla_weather/app/core/http/app_dio.dart';
 import 'package:hubla_weather/app/data/weather/datasources/remote/requests/get_current_weather_request.dart';
+import 'package:hubla_weather/app/data/weather/datasources/remote/requests/get_geocoding_request.dart';
 import 'package:hubla_weather/app/domain/weather/entities/city.dart';
 import 'package:hubla_weather/app/domain/weather/entities/city_weather.dart';
 import 'package:hubla_weather/app/domain/weather/entities/weather_info.dart';
@@ -26,7 +27,11 @@ class WeatherRemoteDatasource {
       (response) {
         try {
           final data = response.data as Map<String, dynamic>;
-          final cityWeather = _parseCityWeather(data, city.slug);
+          final cityWeather = _parseCityWeather(
+            data,
+            city.slug,
+            isFromCache: response.isFromCache,
+          );
           return Success(cityWeather);
         } catch (error, stackTrace) {
           return Error(SerializationError('Failed to parse weather data: $error', stackTrace: stackTrace));
@@ -46,7 +51,11 @@ class WeatherRemoteDatasource {
   ///   "dt": 1740400000
   /// }
   /// ```
-  CityWeather _parseCityWeather(Map<String, dynamic> data, String citySlug) {
+  CityWeather _parseCityWeather(
+    Map<String, dynamic> data,
+    String citySlug, {
+    bool isFromCache = false,
+  }) {
     final main = data['main'] as Map<String, dynamic>;
     final wind = data['wind'] as Map<String, dynamic>;
     final weatherList = data['weather'] as List<dynamic>;
@@ -62,6 +71,48 @@ class WeatherRemoteDatasource {
       windSpeed: (wind['speed'] as num).toDouble(),
       weather: WeatherInfo.fromJson(weatherJson),
       dateTime: DateTime.fromMillisecondsSinceEpoch(dt * 1000, isUtc: true),
+      isStale: isFromCache,
+    );
+  }
+
+  /// Geocodes a city name to geographic coordinates using the
+  /// OpenWeatherMap Geocoding API.
+  ///
+  /// Returns the latitude and longitude of the first matching result.
+  /// Returns an [Error] if the API call fails or no results are found.
+  Future<Result<AppError, ({double lat, double lon})>> geocodeCity({
+    required String cityName,
+  }) async {
+    final responseResult = await _client.request(
+      GetGeocodingRequest(cityName: cityName),
+    );
+
+    return responseResult.when(
+      Error.new,
+      (response) {
+        try {
+          final data = response.data as List<dynamic>;
+
+          if (data.isEmpty) {
+            return const Error(
+              UnknownError(errorMessage: 'No geocoding results found'),
+            );
+          }
+
+          final location = data.first as Map<String, dynamic>;
+          final lat = (location['lat'] as num).toDouble();
+          final lon = (location['lon'] as num).toDouble();
+
+          return Success((lat: lat, lon: lon));
+        } catch (error, stackTrace) {
+          return Error(
+            SerializationError(
+              'Failed to parse geocoding data: $error',
+              stackTrace: stackTrace,
+            ),
+          );
+        }
+      },
     );
   }
 }

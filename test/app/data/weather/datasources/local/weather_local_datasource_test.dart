@@ -116,5 +116,61 @@ void main() {
         expect(result, isEmpty);
       });
     });
+
+    group('saveGeocodingResult', () {
+      test('should write geocoding data with correct key and box', () async {
+        when(
+          () => mockStorageService.write<Map<String, double>>(
+            key: any(named: 'key'),
+            value: any(named: 'value'),
+            boxName: any(named: 'boxName'),
+          ),
+        ).thenAnswer((_) async {});
+
+        await datasource.saveGeocodingResult(
+          citySlug: 'sao-paulo',
+          lat: -23.5506,
+          lon: -46.6340,
+        );
+
+        verify(
+          () => mockStorageService.write(
+            key: 'geocoding_sao-paulo',
+            value: {'lat': -23.5506, 'lon': -46.6340},
+            boxName: 'geocoding_cache',
+          ),
+        ).called(1);
+      });
+    });
+
+    group('getGeocodingResult', () {
+      test('should return coordinates when cached data exists', () async {
+        when(
+          () => mockStorageService.read<Map<dynamic, dynamic>>(
+            'geocoding_sao-paulo',
+            boxName: 'geocoding_cache',
+          ),
+        ).thenAnswer((_) async => {'lat': -23.5506, 'lon': -46.6340});
+
+        final result = await datasource.getGeocodingResult('sao-paulo');
+
+        expect(result, isNotNull);
+        expect(result!.lat, -23.5506);
+        expect(result.lon, -46.6340);
+      });
+
+      test('should return null when no cached geocoding data exists', () async {
+        when(
+          () => mockStorageService.read<Map<dynamic, dynamic>>(
+            'geocoding_sao-paulo',
+            boxName: 'geocoding_cache',
+          ),
+        ).thenAnswer((_) async => null);
+
+        final result = await datasource.getGeocodingResult('sao-paulo');
+
+        expect(result, isNull);
+      });
+    });
   });
 }

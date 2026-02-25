@@ -13,6 +13,8 @@ class WeatherLocalDatasource {
 
   static const String _boxName = 'weather_cache';
   static const String _keyPrefix = 'weather_';
+  static const String _geocodingBoxName = 'geocoding_cache';
+  static const String _geocodingKeyPrefix = 'geocoding_';
 
   /// Persists weather data for a single city.
   Future<void> saveCityWeather(CityWeather cityWeather) => _storageService.write(
@@ -50,5 +52,37 @@ class WeatherLocalDatasource {
       }
     }
     return results;
+  }
+
+  /// Persists geocoded coordinates for a city.
+  ///
+  /// Coordinates are stored permanently since geographic locations
+  /// do not change. Key format: `geocoding_{citySlug}`.
+  Future<void> saveGeocodingResult({
+    required String citySlug,
+    required double lat,
+    required double lon,
+  }) => _storageService.write(
+    key: '$_geocodingKeyPrefix$citySlug',
+    value: {'lat': lat, 'lon': lon},
+    boxName: _geocodingBoxName,
+  );
+
+  /// Retrieves cached geocoding coordinates for a city.
+  ///
+  /// Returns `null` if no cached geocoding data exists.
+  Future<({double lat, double lon})?> getGeocodingResult(String citySlug) async {
+    final data = await _storageService.read<Map<dynamic, dynamic>>(
+      '$_geocodingKeyPrefix$citySlug',
+      boxName: _geocodingBoxName,
+    );
+    if (data == null) {
+      return null;
+    }
+
+    return (
+      lat: (data['lat'] as num).toDouble(),
+      lon: (data['lon'] as num).toDouble(),
+    );
   }
 }

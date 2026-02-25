@@ -2,9 +2,9 @@
 applyTo: "lib/app/presentation/**"
 ---
 
-<!-- Version: 1.1.0 -->
+<!-- Version: 1.2.0 -->
 
-# Presentation Layer (v1.1.0)
+# Presentation Layer (v1.2.0)
 
 ## State Management: Cubit + BlocPresentationMixin
 
@@ -99,6 +99,8 @@ class ErrorEvent extends Equatable implements FeaturePresentationEvent {
 - Cubits are **NEVER** registered in the service locator — instantiate them directly in the route's `BlocProvider.create` callback
 - Use `BlocProvider` at the route level, not inside the page `build` method
 - Keep pages as thin UI shells: delegate logic to cubits, delegate reusable UI to widget files
+- **Page files must only contain the page widget class** — all other widgets (sub-sections, lists, banners, error states, etc.) must be extracted into separate files under the feature's `widgets/` folder
+- Never return widgets from helper methods/functions — always use proper widget classes
 
 ## Routing (go_router)
 

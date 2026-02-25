@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 /// Weather condition groups returned by the OpenWeatherMap API.
@@ -61,4 +62,26 @@ enum WeatherCondition {
 
   /// The raw API string value.
   final String apiValue;
+
+  /// Material icon representing this weather condition.
+  ///
+  /// Used for offline-capable icon display on city weather cards.
+  IconData get icon => switch (this) {
+    WeatherCondition.clear => Icons.wb_sunny_rounded,
+    WeatherCondition.clouds => Icons.cloud_rounded,
+    WeatherCondition.rain => Icons.water_drop_rounded,
+    WeatherCondition.drizzle => Icons.grain_rounded,
+    WeatherCondition.thunderstorm => Icons.thunderstorm_rounded,
+    WeatherCondition.snow => Icons.ac_unit_rounded,
+    WeatherCondition.mist => Icons.blur_on_rounded,
+    WeatherCondition.smoke => Icons.blur_circular_rounded,
+    WeatherCondition.haze => Icons.blur_on_rounded,
+    WeatherCondition.dust => Icons.blur_linear_rounded,
+    WeatherCondition.fog => Icons.cloud_rounded,
+    WeatherCondition.sand => Icons.blur_linear_rounded,
+    WeatherCondition.ash => Icons.blur_circular_rounded,
+    WeatherCondition.squall => Icons.air_rounded,
+    WeatherCondition.tornado => Icons.tornado_rounded,
+    WeatherCondition.unknown => Icons.help_outline_rounded,
+  };
 }
