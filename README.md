@@ -103,6 +103,72 @@ lib/app/
 
 ---
 
+## Library Choices
+
+Every dependency was chosen deliberately. Here's the rationale for each and what alternatives were considered.
+
+### State Management — `flutter_bloc` (Cubit)
+
+**Why:** flutter_bloc is the most mature, testable state management solution in the Flutter ecosystem. The Cubit variant provides a simpler API than full Bloc when the event audit trail isn't needed — which is the case for this app. It enforces a clear separation between UI and business logic and comes with first-class testing support (`bloc_test`).
+
+### One-Shot Presentation Events — `bloc_presentation`
+
+**Why:** Vanilla Cubit/Bloc conflates persistent state with transient events (snackbars, navigation, toasts). `bloc_presentation` adds a dedicated channel for one-shot events that are consumed exactly once, avoiding the anti-pattern of encoding navigation or error dialogs in state objects.
+
+### Routing — `go_router`
+
+**Why:** Official Flutter team package. Supports declarative routing, deep linking, redirect guards (used for auth flow), and nested navigation. Being an official package means long-term maintenance and compatibility with Flutter updates.
+
+### Dependency Injection — `get_it`
+
+**Why:** Simple, fast service locator with zero code generation. Supports lazy/eager/factory registration patterns. Doesn't pollute the widget tree like InheritedWidget-based alternatives, keeping DI decoupled from the UI layer — which aligns with Clean Architecture.
+
+### HTTP Client — `dio`
+
+**Why:** Feature-rich HTTP client with a powerful interceptor pipeline. This project needs 5 interceptors (auth, logging, retry, cache, connectivity) — Dio's `InterceptorsWrapper` makes this composable and testable. It also provides typed exception handling (`DioException`) with granular error categorization (timeout, connection error, bad response).
+
+### Local Storage — `hive_ce`
+
+**Why:** Hive Community Edition is the actively maintained fork of Hive after the original package was abandoned. It's a fast, lightweight NoSQL store with no native dependencies, making it ideal for caching weather data. Supports typed adapters via code generation (`hive_ce_generator`) and box-level isolation for separating different data domains.
+
+### Secure Storage — `flutter_secure_storage`
+
+**Why:** Uses platform-native secure storage (iOS Keychain, Android EncryptedSharedPreferences) for auth tokens. This is the right tool for credentials — general-purpose storage like Hive doesn't provide encryption at rest.
+
+### Network Detection — `connectivity_plus` + `internet_connection_checker_plus`
+
+**Why:** Two packages are needed because they solve different problems. `connectivity_plus` detects _network interface state_ (WiFi on/off), while `internet_connection_checker_plus` verifies _actual internet reachability_ by pinging DNS servers. For an offline-first app, knowing that WiFi is connected but the internet is unreachable is critical for correct UX.
+
+### Serialization — `json_serializable`
+
+**Why:** Official Dart team package. Generates `fromJson`/`toJson` code at compile time, avoiding runtime reflection (which Dart doesn't support in AOT mode anyway). Type-safe, widely adopted, zero runtime cost.
+
+### Value Equality — `equatable`
+
+**Why:** Eliminates manual `==` / `hashCode` boilerplate on entities and Cubit states. Essential for Cubit to detect state changes correctly via equality comparison.
+
+### Typography — `google_fonts`
+
+**Why:** Official Google package for runtime font loading. Provides access to the full Google Fonts catalog without bundling font files in the app binary.
+
+### Logging — `logger`
+
+**Why:** Pretty-printed, leveled logging with configurable output. Replaces `print()` (which is banned by lint rules) with structured, filterable log output.
+
+### Loading Animations — `shimmer`
+
+**Why:** Lightweight package for skeleton loading animations. Provides a polished loading UX with minimal code — a few lines wraps any widget in a shimmer effect.
+
+### Dev: Mocking — `mocktail`
+
+**Why:** Code-generation-free mocking library. Unlike `mockito`, it doesn't require `build_runner` to generate mock classes — you just extend `Mock`. This reduces the dev feedback loop and keeps test files self-contained.
+
+### Dev: Linting — `dart_code_linter`
+
+**Why:** Adds lint rules beyond the standard set, enforcing stricter code quality. Combined with a comprehensive `analysis_options.yaml` (266 lines of explicit rule configuration), this ensures consistent code style across human and AI contributions.
+
+---
+
 ## Getting Started
 
 ### Prerequisites
