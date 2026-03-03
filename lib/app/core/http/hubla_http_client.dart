@@ -12,6 +12,7 @@ import 'package:hubla_weather/app/core/http/interceptors/hubla_retry_interceptor
 import 'package:hubla_weather/app/core/services/hubla_connectivity_service.dart';
 import 'package:hubla_weather/app/core/services/hubla_logger_service.dart';
 import 'package:hubla_weather/app/core/services/hubla_storage_service.dart';
+import 'package:meta/meta.dart';
 
 /// Dio-based HTTP client that wraps all requests in a [Result] type.
 ///
@@ -52,6 +53,12 @@ class HublaHttpClient {
       HublaRetryInterceptor(dio: _dio, loggerService: loggerService),
     ]);
   }
+
+  /// Creates a [HublaHttpClient] with a pre-configured [Dio] instance.
+  ///
+  /// Used exclusively in tests to inject a mock [Dio].
+  @visibleForTesting
+  HublaHttpClient.withDio(Dio dio) : _dio = dio;
 
   late final Dio _dio;
 
