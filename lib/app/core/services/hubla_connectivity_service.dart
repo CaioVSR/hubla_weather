@@ -4,8 +4,8 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 ///
 /// Wraps [InternetConnection] from `internet_connection_checker_plus`
 /// to provide a simple interface for connectivity checks.
-class ConnectivityService {
-  ConnectivityService({InternetConnection? internetConnection}) : _internetConnection = internetConnection ?? InternetConnection();
+class HublaConnectivityService {
+  HublaConnectivityService({InternetConnection? internetConnection}) : _internetConnection = internetConnection ?? InternetConnection();
 
   final InternetConnection _internetConnection;
 

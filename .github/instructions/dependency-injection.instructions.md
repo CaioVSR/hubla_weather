@@ -16,8 +16,8 @@ final GetIt serviceLocator = GetIt.instance;
 void setupServiceLocator() {
   // Core services
   serviceLocator
-    ..registerLazySingleton<HttpClient>(() => HttpClient())
-    ..registerLazySingleton<StorageService>(() => StorageService());
+    ..registerLazySingleton<HublaHttpClient>(() => HublaHttpClient())
+    ..registerLazySingleton<HublaStorageService>(() => HublaStorageService());
 
   // Feature: Weather
   serviceLocator

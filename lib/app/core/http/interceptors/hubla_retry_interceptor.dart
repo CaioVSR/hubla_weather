@@ -1,21 +1,21 @@
 import 'package:dio/dio.dart';
-import 'package:hubla_weather/app/core/services/logger_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_logger_service.dart';
 
 /// Interceptor that retries failed requests on 5xx errors and timeouts.
 ///
 /// - Max retries: 3
 /// - Backoff: exponential (1s, 2s, 4s)
 /// - Retryable conditions: server errors (5xx) and timeout exceptions
-class RetryInterceptor extends Interceptor {
-  RetryInterceptor({
+class HublaRetryInterceptor extends Interceptor {
+  HublaRetryInterceptor({
     required Dio dio,
-    required LoggerService loggerService,
+    required HublaLoggerService loggerService,
     this.maxRetries = 3,
   }) : _dio = dio,
        _loggerService = loggerService;
 
   final Dio _dio;
-  final LoggerService _loggerService;
+  final HublaLoggerService _loggerService;
 
   /// Maximum number of retry attempts.
   final int maxRetries;

@@ -1,6 +1,6 @@
-import 'package:hubla_weather/app/core/http/app_dio.dart';
-import 'package:hubla_weather/app/core/services/secure_storage_service.dart';
-import 'package:hubla_weather/app/core/services/storage_service.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_client.dart';
+import 'package:hubla_weather/app/core/services/hubla_secure_storage_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_storage_service.dart';
 import 'package:hubla_weather/app/data/auth/datasources/local/auth_local_datasource.dart';
 import 'package:hubla_weather/app/data/weather/datasources/local/weather_local_datasource.dart';
 import 'package:hubla_weather/app/data/weather/datasources/remote/weather_remote_datasource.dart';
@@ -10,19 +10,19 @@ import '../mocks/services_mocks.dart';
 
 abstract class DatasourcesFactories {
   static AuthLocalDatasource createAuthLocalDatasource({
-    SecureStorageService? secureStorageService,
+    HublaSecureStorageService? secureStorageService,
   }) => AuthLocalDatasource(
     secureStorageService: secureStorageService ?? MockSecureStorageService(),
   );
 
   static WeatherLocalDatasource createWeatherLocalDatasource({
-    StorageService? storageService,
+    HublaStorageService? storageService,
   }) => WeatherLocalDatasource(
     storageService: storageService ?? MockStorageService(),
   );
 
   static WeatherRemoteDatasource createWeatherRemoteDatasource({
-    HttpClient? client,
+    HublaHttpClient? client,
   }) => WeatherRemoteDatasource(
     client: client ?? MockHttpClient(),
   );

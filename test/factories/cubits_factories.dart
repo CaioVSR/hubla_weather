@@ -1,4 +1,4 @@
-import 'package:hubla_weather/app/core/services/connectivity_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_connectivity_service.dart';
 import 'package:hubla_weather/app/domain/auth/use_cases/sign_in_use_case.dart';
 import 'package:hubla_weather/app/domain/weather/use_cases/get_all_cities_weather_use_case.dart';
 import 'package:hubla_weather/app/presentation/pages/auth/sign_in/cubit/sign_in_cubit.dart';
@@ -16,7 +16,7 @@ abstract class CubitsFactories {
 
   static CitiesCubit createCitiesCubit({
     GetAllCitiesWeatherUseCase? getAllCitiesWeatherUseCase,
-    ConnectivityService? connectivityService,
+    HublaConnectivityService? connectivityService,
   }) => CitiesCubit(
     getAllCitiesWeatherUseCase: getAllCitiesWeatherUseCase ?? MockGetAllCitiesWeatherUseCase(),
     connectivityService: connectivityService ?? MockConnectivityService(),

@@ -1,20 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hubla_weather/app/core/http/interceptors/auth_interceptor.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_auth_interceptor.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../mocks/general_mocks.dart';
 
 void main() {
-  late AuthInterceptor interceptor;
+  late HublaAuthInterceptor interceptor;
   late MockRequestInterceptorHandler mockHandler;
 
   setUp(() {
-    interceptor = AuthInterceptor();
+    interceptor = HublaAuthInterceptor();
     mockHandler = MockRequestInterceptorHandler();
   });
 
-  group('AuthInterceptor', () {
+  group('HublaAuthInterceptor', () {
     test('should append appid query parameter to request', () {
       final options = RequestOptions(path: '/data/2.5/weather');
 

@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hubla_weather/app/core/http/interceptors/retry_interceptor.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_retry_interceptor.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../mocks/general_mocks.dart';
 import '../../../../mocks/services_mocks.dart';
 
 void main() {
-  late RetryInterceptor interceptor;
+  late HublaRetryInterceptor interceptor;
   late MockDio mockDio;
   late MockLoggerService mockLoggerService;
   late MockErrorInterceptorHandler mockHandler;
@@ -22,7 +22,7 @@ void main() {
     mockDio = MockDio();
     mockLoggerService = MockLoggerService();
     mockHandler = MockErrorInterceptorHandler();
-    interceptor = RetryInterceptor(
+    interceptor = HublaRetryInterceptor(
       dio: mockDio,
       loggerService: mockLoggerService,
       // ignore: avoid_redundant_argument_values
@@ -30,7 +30,7 @@ void main() {
     );
   });
 
-  group('RetryInterceptor', () {
+  group('HublaRetryInterceptor', () {
     group('should retry on retryable errors', () {
       test('should retry on 500 server error and resolve on success', () async {
         final options = RequestOptions(path: '/data/2.5/weather');

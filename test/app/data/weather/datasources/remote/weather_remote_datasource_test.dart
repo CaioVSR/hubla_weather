@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hubla_weather/app/core/errors/app_error.dart';
 import 'package:hubla_weather/app/core/errors/result.dart';
-import 'package:hubla_weather/app/core/http/http_response.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_response.dart';
 import 'package:hubla_weather/app/data/weather/datasources/remote/weather_remote_datasource.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -29,7 +29,7 @@ void main() {
       test('should return Success with CityWeather on valid response', () async {
         when(() => mockClient.request(any())).thenAnswer(
           (_) async => const Success(
-            HttpResponse(
+            HublaHttpResponse(
               data: {
                 'main': {
                   'temp': 25.5,
@@ -70,7 +70,7 @@ void main() {
       test('should mark CityWeather as stale when response is from cache', () async {
         when(() => mockClient.request(any())).thenAnswer(
           (_) async => const Success(
-            HttpResponse(
+            HublaHttpResponse(
               data: {
                 'main': {
                   'temp': 25.5,
@@ -100,7 +100,7 @@ void main() {
         expect(result.getSuccess()!.isStale, isTrue);
       });
 
-      test('should return Error when HttpClient returns Error', () async {
+      test('should return Error when HublaHttpClient returns Error', () async {
         when(() => mockClient.request(any())).thenAnswer(
           (_) async => const Error(NoConnectionError()),
         );
@@ -113,7 +113,7 @@ void main() {
 
       test('should return SerializationError on malformed response', () async {
         when(() => mockClient.request(any())).thenAnswer(
-          (_) async => const Success(HttpResponse(data: {'invalid': true}, isFromCache: false)),
+          (_) async => const Success(HublaHttpResponse(data: {'invalid': true}, isFromCache: false)),
         );
 
         final result = await datasource.getCurrentWeather(city: city);
@@ -127,7 +127,7 @@ void main() {
       test('should return Success with lat/lon on valid response', () async {
         when(() => mockClient.request(any())).thenAnswer(
           (_) async => const Success(
-            HttpResponse(
+            HublaHttpResponse(
               data: [
                 {
                   'name': 'São Paulo',
@@ -153,7 +153,7 @@ void main() {
       test('should return Error when API returns empty array', () async {
         when(() => mockClient.request(any())).thenAnswer(
           (_) async => const Success(
-            HttpResponse(data: <dynamic>[], isFromCache: false),
+            HublaHttpResponse(data: <dynamic>[], isFromCache: false),
           ),
         );
 
@@ -162,7 +162,7 @@ void main() {
         expect(result.isError, isTrue);
       });
 
-      test('should return Error when HttpClient returns Error', () async {
+      test('should return Error when HublaHttpClient returns Error', () async {
         when(() => mockClient.request(any())).thenAnswer(
           (_) async => const Error(NoConnectionError()),
         );
@@ -176,7 +176,7 @@ void main() {
       test('should return SerializationError on malformed response', () async {
         when(() => mockClient.request(any())).thenAnswer(
           (_) async => const Success(
-            HttpResponse(data: 'not a list', isFromCache: false),
+            HublaHttpResponse(data: 'not a list', isFromCache: false),
           ),
         );
 

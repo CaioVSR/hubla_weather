@@ -1,22 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hubla_weather/app/core/http/http_request.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_request.dart';
 
-/// Concrete implementation of HttpRequest for testing default values.
-class _TestGetRequest extends HttpRequest {
-  _TestGetRequest({this.testPath = '/test', this.testMethod = HttpMethod.get});
+/// Concrete implementation of HublaHttpRequest for testing default values.
+class _TestGetRequest extends HublaHttpRequest {
+  _TestGetRequest({this.testPath = '/test', this.testMethod = HublaHttpMethod.get});
 
   final String testPath;
-  final HttpMethod testMethod;
+  final HublaHttpMethod testMethod;
 
   @override
   String get path => testPath;
 
   @override
-  HttpMethod get method => testMethod;
+  HublaHttpMethod get method => testMethod;
 }
 
 /// POST request with body for testing.
-class _TestPostRequest extends HttpRequest {
+class _TestPostRequest extends HublaHttpRequest {
   _TestPostRequest({required this.testBody});
 
   final Map<String, dynamic> testBody;
@@ -25,19 +25,19 @@ class _TestPostRequest extends HttpRequest {
   String get path => '/test';
 
   @override
-  HttpMethod get method => HttpMethod.post;
+  HublaHttpMethod get method => HublaHttpMethod.post;
 
   @override
   Map<String, dynamic> get body => testBody;
 }
 
 /// Request with custom query params, headers, and cacheable flag.
-class _TestCacheableRequest extends HttpRequest {
+class _TestCacheableRequest extends HublaHttpRequest {
   @override
   String get path => '/data/2.5/weather';
 
   @override
-  HttpMethod get method => HttpMethod.get;
+  HublaHttpMethod get method => HublaHttpMethod.get;
 
   @override
   Map<String, dynamic> get queryParameters => {'lat': -23.5505, 'lon': -46.6333};
@@ -50,7 +50,7 @@ class _TestCacheableRequest extends HttpRequest {
 }
 
 void main() {
-  group('HttpRequest', () {
+  group('HublaHttpRequest', () {
     test('should have empty body by default', () {
       final request = _TestGetRequest();
 
@@ -77,17 +77,17 @@ void main() {
 
     test('should return correct path and method', () {
       // ignore: avoid_redundant_argument_values
-      final request = _TestGetRequest(testPath: '/data/2.5/forecast', testMethod: HttpMethod.get);
+      final request = _TestGetRequest(testPath: '/data/2.5/forecast', testMethod: HublaHttpMethod.get);
 
       expect(request.path, '/data/2.5/forecast');
-      expect(request.method, HttpMethod.get);
+      expect(request.method, HublaHttpMethod.get);
     });
 
     test('should return body for POST requests', () {
       final request = _TestPostRequest(testBody: {'name': 'test'});
 
       expect(request.body, {'name': 'test'});
-      expect(request.method, HttpMethod.post);
+      expect(request.method, HublaHttpMethod.post);
     });
 
     test('should return custom queryParameters and headers', () {
@@ -99,9 +99,12 @@ void main() {
     });
   });
 
-  group('HttpMethod', () {
+  group('HublaHttpMethod', () {
     test('should contain all expected methods', () {
-      expect(HttpMethod.values, containsAll([HttpMethod.get, HttpMethod.post, HttpMethod.put, HttpMethod.patch, HttpMethod.delete]));
+      expect(
+        HublaHttpMethod.values,
+        containsAll([HublaHttpMethod.get, HublaHttpMethod.post, HublaHttpMethod.put, HublaHttpMethod.patch, HublaHttpMethod.delete]),
+      );
     });
   });
 }

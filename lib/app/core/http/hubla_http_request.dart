@@ -1,5 +1,5 @@
-/// HTTP methods supported by the [HttpRequest] abstraction.
-enum HttpMethod { get, post, put, patch, delete }
+/// HTTP methods supported by the [HublaHttpRequest] abstraction.
+enum HublaHttpMethod { get, post, put, patch, delete }
 
 /// Base class for HTTP request definitions.
 ///
@@ -8,24 +8,24 @@ enum HttpMethod { get, post, put, patch, delete }
 ///
 /// Example:
 /// ```dart
-/// class GetWeatherRequest extends HttpRequest {
+/// class GetWeatherRequest extends HublaHttpRequest {
 ///   GetWeatherRequest({required this.lat, required this.lon});
 ///   final double lat;
 ///   final double lon;
 ///
 ///   @override String get path => '/data/2.5/weather';
-///   @override HttpMethod get method => HttpMethod.get;
+///   @override HublaHttpMethod get method => HublaHttpMethod.get;
 ///   @override Map<String, dynamic> get queryParameters => {'lat': lat, 'lon': lon};
 /// }
 /// ```
-abstract class HttpRequest {
-  const HttpRequest();
+abstract class HublaHttpRequest {
+  const HublaHttpRequest();
 
   /// The URL path (relative to the base URL).
   String get path;
 
   /// The HTTP method for this request.
-  HttpMethod get method;
+  HublaHttpMethod get method;
 
   /// Request body (used for POST, PUT, PATCH).
   Map<String, dynamic> get body => const {};

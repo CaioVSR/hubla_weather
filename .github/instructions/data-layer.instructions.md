@@ -39,8 +39,8 @@ class FeatureRepository {
 
 ```dart
 class FeatureRemoteDatasource {
-  FeatureRemoteDatasource({required HttpClient client}) : _client = client;
-  final HttpClient _client;
+  FeatureRemoteDatasource({required HublaHttpClient client}) : _client = client;
+  final HublaHttpClient _client;
 
   Future<Result<AppError, SomeEntity>> getSomething({required String id}) async {
     final responseResult = await _client.request(GetSomethingRequest(id: id));
@@ -60,9 +60,9 @@ class FeatureRemoteDatasource {
 
 ```dart
 class FeatureLocalDatasource {
-  FeatureLocalDatasource({required StorageService storageService})
+  FeatureLocalDatasource({required HublaStorageService storageService})
       : _storageService = storageService;
-  final StorageService _storageService;
+  final HublaStorageService _storageService;
 
   SomeEntity? getSomeData() => _storageService.read('some_data_key');
 
@@ -77,22 +77,22 @@ class FeatureLocalDatasource {
 
 ```dart
 // POST with body
-class CreateSomethingRequest extends HttpRequest {
+class CreateSomethingRequest extends HublaHttpRequest {
   CreateSomethingRequest({required this.name});
   final String name;
 
   @override String get path => '/api/v1/something';
-  @override HttpMethod get method => HttpMethod.post;
+  @override HublaHttpMethod get method => HublaHttpMethod.post;
   @override Map<String, dynamic> get body => {'name': name};
 }
 
 // GET with query parameters
-class GetSomethingRequest extends HttpRequest {
+class GetSomethingRequest extends HublaHttpRequest {
   GetSomethingRequest({this.filter});
   final String? filter;
 
   @override String get path => '/api/v1/something';
-  @override HttpMethod get method => HttpMethod.get;
+  @override HublaHttpMethod get method => HublaHttpMethod.get;
   @override Map<String, dynamic> get queryParameters => {
     if (filter != null) 'filter': filter,
   };

@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:hubla_weather/app/core/http/interceptors/connectivity_interceptor.dart';
-import 'package:hubla_weather/app/core/services/logger_service.dart';
-import 'package:hubla_weather/app/core/services/storage_service.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_connectivity_interceptor.dart';
+import 'package:hubla_weather/app/core/services/hubla_logger_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_storage_service.dart';
 
 /// Interceptor that caches GET responses and serves them when offline.
 ///
-/// Works with [ConnectivityInterceptor] which annotates requests with
+/// Works with [HublaConnectivityInterceptor] which annotates requests with
 /// `isOffline` status. Only caches requests whose `isCacheable` extra
 /// flag is `true`.
 ///
@@ -15,15 +15,15 @@ import 'package:hubla_weather/app/core/services/storage_service.dart';
 /// **On response (cacheable):** Caches the response data for later offline use.
 ///
 /// **On error (cacheable):** Falls back to cached data if available.
-class CacheInterceptor extends Interceptor {
-  CacheInterceptor({
-    required StorageService storageService,
-    required LoggerService loggerService,
+class HublaCacheInterceptor extends Interceptor {
+  HublaCacheInterceptor({
+    required HublaStorageService storageService,
+    required HublaLoggerService loggerService,
   }) : _storageService = storageService,
        _loggerService = loggerService;
 
-  final StorageService _storageService;
-  final LoggerService _loggerService;
+  final HublaStorageService _storageService;
+  final HublaLoggerService _loggerService;
 
   /// Key stored in [RequestOptions.extra] indicating the request is cacheable.
   static const String isCacheableKey = 'isCacheable';
@@ -34,7 +34,7 @@ class CacheInterceptor extends Interceptor {
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     final isCacheable = options.extra[isCacheableKey] as bool? ?? false;
-    final isOffline = options.extra[ConnectivityInterceptor.isOfflineKey] as bool? ?? false;
+    final isOffline = options.extra[HublaConnectivityInterceptor.isOfflineKey] as bool? ?? false;
 
     if (!isCacheable || !isOffline) {
       return handler.next(options);

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc_presentation/bloc_presentation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hubla_weather/app/core/services/connectivity_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_connectivity_service.dart';
 import 'package:hubla_weather/app/domain/weather/use_cases/get_all_cities_weather_use_case.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_presentation_event.dart';
 import 'package:hubla_weather/app/presentation/pages/weather/cities/cubit/cities_sort_criteria.dart';
@@ -19,7 +19,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 class CitiesCubit extends Cubit<CitiesState> with BlocPresentationMixin<CitiesState, CitiesPresentationEvent> {
   CitiesCubit({
     required GetAllCitiesWeatherUseCase getAllCitiesWeatherUseCase,
-    required ConnectivityService connectivityService,
+    required HublaConnectivityService connectivityService,
   }) : _getAllCitiesWeatherUseCase = getAllCitiesWeatherUseCase,
        _connectivityService = connectivityService,
        super(CitiesState.initial()) {
@@ -28,7 +28,7 @@ class CitiesCubit extends Cubit<CitiesState> with BlocPresentationMixin<CitiesSt
   }
 
   final GetAllCitiesWeatherUseCase _getAllCitiesWeatherUseCase;
-  final ConnectivityService _connectivityService;
+  final HublaConnectivityService _connectivityService;
   StreamSubscription<InternetStatus>? _connectivitySubscription;
 
   /// Fetches weather for all cities. Used for initial load.

@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hubla_weather/app/core/errors/app_error.dart';
 
 void main() {
-  group('HttpClient error mapping (_mapDioException)', () {
+  group('HublaHttpClient error mapping (_mapDioException)', () {
     // These tests verify the DioException → AppError mapping logic
-    // that lives inside HttpClient._mapDioException.
+    // that lives inside HublaHttpClient._mapDioException.
     //
     // Since the method is private, we replicate its switch statement
     // in [_mapDioExceptionPublic] below to keep the mapping specification
@@ -97,7 +97,7 @@ void main() {
   });
 }
 
-/// Replicates the private `_mapDioException` method from `HttpClient`
+/// Replicates the private `_mapDioException` method from `HublaHttpClient`
 /// for testability. This mirrors the exact switch logic.
 AppError _mapDioExceptionPublic(DioException exception) {
   final stackTrace = exception.stackTrace;

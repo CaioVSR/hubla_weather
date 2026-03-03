@@ -1,4 +1,4 @@
-import 'package:hubla_weather/app/core/http/http_request.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_request.dart';
 
 /// GET request for current weather data from the OpenWeatherMap API.
 ///
@@ -6,7 +6,7 @@ import 'package:hubla_weather/app/core/http/http_request.dart';
 /// Response is cacheable for offline-first support.
 ///
 /// See: https://openweathermap.org/current
-class GetCurrentWeatherRequest extends HttpRequest {
+class GetCurrentWeatherRequest extends HublaHttpRequest {
   GetCurrentWeatherRequest({
     required this.lat,
     required this.lon,
@@ -19,7 +19,7 @@ class GetCurrentWeatherRequest extends HttpRequest {
   String get path => '/data/2.5/weather';
 
   @override
-  HttpMethod get method => HttpMethod.get;
+  HublaHttpMethod get method => HublaHttpMethod.get;
 
   @override
   Map<String, dynamic> get queryParameters => {

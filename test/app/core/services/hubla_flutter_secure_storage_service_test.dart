@@ -1,20 +1,20 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hubla_weather/app/core/services/flutter_secure_storage_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_flutter_secure_storage_service.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
 
 void main() {
   late MockFlutterSecureStorage mockStorage;
-  late FlutterSecureStorageService service;
+  late HublaFlutterSecureStorageService service;
 
   setUp(() {
     mockStorage = MockFlutterSecureStorage();
-    service = FlutterSecureStorageService(storage: mockStorage);
+    service = HublaFlutterSecureStorageService(storage: mockStorage);
   });
 
-  group('FlutterSecureStorageService', () {
+  group('HublaFlutterSecureStorageService', () {
     group('read', () {
       test('should delegate to FlutterSecureStorage.read', () async {
         when(() => mockStorage.read(key: 'test_key')).thenAnswer((_) async => 'test_value');

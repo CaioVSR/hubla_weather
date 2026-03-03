@@ -1,9 +1,9 @@
 /// Agnostic local storage contract.
 ///
 /// Provides key-value storage operations without coupling to any
-/// specific database implementation. See `HiveStorageService` for
+/// specific database implementation. See `HublaHiveStorageService` for
 /// the concrete Hive CE implementation.
-abstract class StorageService {
+abstract class HublaStorageService {
   /// The default box name used when no `boxName` is specified.
   static const String defaultBoxName = 'cache';
 

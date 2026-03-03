@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:hubla_weather/app/core/services/logger_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_logger_service.dart';
 
-/// Interceptor that logs HTTP requests and responses via [LoggerService].
+/// Interceptor that logs HTTP requests and responses via [HublaLoggerService].
 ///
-/// Only active in debug mode (guarded internally by [LoggerService]).
-class LoggingInterceptor extends Interceptor {
-  LoggingInterceptor({required LoggerService loggerService}) : _loggerService = loggerService;
+/// Only active in debug mode (guarded internally by [HublaLoggerService]).
+class HublaLoggingInterceptor extends Interceptor {
+  HublaLoggingInterceptor({required HublaLoggerService loggerService}) : _loggerService = loggerService;
 
-  final LoggerService _loggerService;
+  final HublaLoggerService _loggerService;
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {

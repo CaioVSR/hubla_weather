@@ -1,4 +1,4 @@
-import 'package:hubla_weather/app/core/http/http_request.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_request.dart';
 
 /// GET request for geocoding a city name via the OpenWeatherMap Geocoding API.
 ///
@@ -7,7 +7,7 @@ import 'package:hubla_weather/app/core/http/http_request.dart';
 /// by the local datasource for permanent coordinate storage.
 ///
 /// See: https://openweathermap.org/api/geocoding-api
-class GetGeocodingRequest extends HttpRequest {
+class GetGeocodingRequest extends HublaHttpRequest {
   GetGeocodingRequest({
     required this.cityName,
     this.countryCode = 'BR',
@@ -20,7 +20,7 @@ class GetGeocodingRequest extends HttpRequest {
   String get path => '/geo/1.0/direct';
 
   @override
-  HttpMethod get method => HttpMethod.get;
+  HublaHttpMethod get method => HublaHttpMethod.get;
 
   @override
   Map<String, dynamic> get queryParameters => {

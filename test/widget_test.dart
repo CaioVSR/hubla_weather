@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hubla_weather/app/core/di/service_locator.dart';
-import 'package:hubla_weather/app/core/services/secure_storage_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_secure_storage_service.dart';
 import 'package:hubla_weather/main.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -13,12 +13,12 @@ void main() {
     setUpGoogleFontsMocks();
     setupServiceLocator();
 
-    // Override SecureStorageService with a mock so the auth redirect
+    // Override HublaSecureStorageService with a mock so the auth redirect
     // works without platform channels.
     serviceLocator.allowReassignment = true;
     final mockSecureStorage = MockSecureStorageService();
     when(() => mockSecureStorage.read(any())).thenAnswer((_) async => null);
-    serviceLocator.registerLazySingleton<SecureStorageService>(() => mockSecureStorage);
+    serviceLocator.registerLazySingleton<HublaSecureStorageService>(() => mockSecureStorage);
     serviceLocator.allowReassignment = false;
   });
 

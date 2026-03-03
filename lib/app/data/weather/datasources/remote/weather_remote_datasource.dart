@@ -1,6 +1,6 @@
 import 'package:hubla_weather/app/core/errors/app_error.dart';
 import 'package:hubla_weather/app/core/errors/result.dart';
-import 'package:hubla_weather/app/core/http/app_dio.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_client.dart';
 import 'package:hubla_weather/app/data/weather/datasources/remote/requests/get_current_weather_request.dart';
 import 'package:hubla_weather/app/data/weather/datasources/remote/requests/get_geocoding_request.dart';
 import 'package:hubla_weather/app/domain/weather/entities/city.dart';
@@ -9,9 +9,9 @@ import 'package:hubla_weather/app/domain/weather/entities/weather_info.dart';
 
 /// Remote datasource that fetches weather data from the OpenWeatherMap API.
 class WeatherRemoteDatasource {
-  WeatherRemoteDatasource({required HttpClient client}) : _client = client;
+  WeatherRemoteDatasource({required HublaHttpClient client}) : _client = client;
 
-  final HttpClient _client;
+  final HublaHttpClient _client;
 
   /// Fetches current weather for the given [city].
   ///

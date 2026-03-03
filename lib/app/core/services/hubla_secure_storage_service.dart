@@ -2,8 +2,8 @@
 ///
 /// Provides key-value storage operations backed by platform-secure
 /// storage (Keychain on iOS, EncryptedSharedPreferences on Android).
-/// See `FlutterSecureStorageService` for the concrete implementation.
-abstract class SecureStorageService {
+/// See `HublaFlutterSecureStorageService` for the concrete implementation.
+abstract class HublaSecureStorageService {
   /// Reads the value for the given [key].
   ///
   /// Returns `null` if the key does not exist.

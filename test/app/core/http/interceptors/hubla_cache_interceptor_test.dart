@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hubla_weather/app/core/http/interceptors/cache_interceptor.dart';
-import 'package:hubla_weather/app/core/http/interceptors/connectivity_interceptor.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_cache_interceptor.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_connectivity_interceptor.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../mocks/general_mocks.dart';
 import '../../../../mocks/services_mocks.dart';
 
 void main() {
-  late CacheInterceptor interceptor;
+  late HublaCacheInterceptor interceptor;
   late MockStorageService mockStorageService;
   late MockLoggerService mockLoggerService;
   late MockRequestInterceptorHandler mockRequestHandler;
@@ -27,7 +27,7 @@ void main() {
     mockRequestHandler = MockRequestInterceptorHandler();
     mockResponseHandler = MockResponseInterceptorHandler();
     mockErrorHandler = MockErrorInterceptorHandler();
-    interceptor = CacheInterceptor(
+    interceptor = HublaCacheInterceptor(
       storageService: mockStorageService,
       loggerService: mockLoggerService,
     );
@@ -43,12 +43,12 @@ void main() {
     path: path,
     queryParameters: queryParameters ?? {'lat': -23.5505, 'lon': -46.6333, 'units': 'metric'},
     extra: {
-      CacheInterceptor.isCacheableKey: isCacheable,
-      ConnectivityInterceptor.isOfflineKey: isOffline,
+      HublaCacheInterceptor.isCacheableKey: isCacheable,
+      HublaConnectivityInterceptor.isOfflineKey: isOffline,
     },
   );
 
-  group('CacheInterceptor', () {
+  group('HublaCacheInterceptor', () {
     group('onRequest', () {
       test('should call handler.next when request is not cacheable', () async {
         final options = _createOptions(isCacheable: false, isOffline: true);
@@ -81,7 +81,7 @@ void main() {
         final response = captured.first as Response<dynamic>;
 
         expect(response.data, cachedData);
-        expect(response.extra[CacheInterceptor.isFromCacheKey], isTrue);
+        expect(response.extra[HublaCacheInterceptor.isFromCacheKey], isTrue);
         expect(response.statusCode, 200);
         verifyNever(() => mockRequestHandler.next(any()));
       });
@@ -171,7 +171,7 @@ void main() {
         final response = captured.first as Response<dynamic>;
 
         expect(response.data, cachedData);
-        expect(response.extra[CacheInterceptor.isFromCacheKey], isTrue);
+        expect(response.extra[HublaCacheInterceptor.isFromCacheKey], isTrue);
         verifyNever(() => mockErrorHandler.next(any()));
       });
 

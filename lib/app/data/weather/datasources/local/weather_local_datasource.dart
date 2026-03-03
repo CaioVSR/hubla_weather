@@ -1,15 +1,15 @@
-import 'package:hubla_weather/app/core/services/storage_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_storage_service.dart';
 import 'package:hubla_weather/app/domain/weather/entities/city_weather.dart';
 import 'package:hubla_weather/app/domain/weather/entities/predefined_cities.dart';
 
 /// Local datasource for persisting and retrieving cached [CityWeather] data.
 ///
-/// Uses [StorageService] (Hive) with per-city keys for granular cache
+/// Uses [HublaStorageService] (Hive) with per-city keys for granular cache
 /// management. Key format: `weather_{citySlug}` (e.g. `weather_sao-paulo`).
 class WeatherLocalDatasource {
-  WeatherLocalDatasource({required StorageService storageService}) : _storageService = storageService;
+  WeatherLocalDatasource({required HublaStorageService storageService}) : _storageService = storageService;
 
-  final StorageService _storageService;
+  final HublaStorageService _storageService;
 
   static const String _boxName = 'weather_cache';
   static const String _keyPrefix = 'weather_';

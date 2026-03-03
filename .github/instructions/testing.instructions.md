@@ -85,7 +85,7 @@ class MockFeatureLocalDatasource extends Mock implements FeatureLocalDatasource 
 class MockGetFeatureUseCase extends Mock implements GetFeatureUseCase {}
 
 // test/mocks/services_mocks.dart
-class MockStorageService extends Mock implements StorageService {}
+class MockStorageService extends Mock implements HublaStorageService {}
 ```
 
 ### Cubit mocks (with `bloc_presentation_test`)
@@ -421,7 +421,7 @@ void main() {
     final request = GetFeatureRequest(id: '1');
 
     expect(request.path, '/api/v1/features/1');
-    expect(request.method, HttpMethod.get);
+    expect(request.method, HublaHttpMethod.get);
   });
 
   test('should include correct body for POST requests', () {

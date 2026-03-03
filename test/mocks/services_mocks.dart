@@ -1,13 +1,13 @@
-import 'package:hubla_weather/app/core/services/connectivity_service.dart';
-import 'package:hubla_weather/app/core/services/logger_service.dart';
-import 'package:hubla_weather/app/core/services/secure_storage_service.dart';
-import 'package:hubla_weather/app/core/services/storage_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_connectivity_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_logger_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_secure_storage_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_storage_service.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockConnectivityService extends Mock implements ConnectivityService {}
+class MockConnectivityService extends Mock implements HublaConnectivityService {}
 
-class MockStorageService extends Mock implements StorageService {}
+class MockStorageService extends Mock implements HublaStorageService {}
 
-class MockLoggerService extends Mock implements LoggerService {}
+class MockLoggerService extends Mock implements HublaLoggerService {}
 
-class MockSecureStorageService extends Mock implements SecureStorageService {}
+class MockSecureStorageService extends Mock implements HublaSecureStorageService {}

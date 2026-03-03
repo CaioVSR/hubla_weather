@@ -5,8 +5,8 @@ import 'package:logger/logger.dart';
 ///
 /// All methods are guarded by [kDebugMode] to ensure no logging
 /// occurs in release or profile builds.
-class LoggerService {
-  LoggerService() : _logger = Logger(printer: PrettyPrinter(methodCount: 0));
+class HublaLoggerService {
+  HublaLoggerService() : _logger = Logger(printer: PrettyPrinter(methodCount: 0));
 
   final Logger _logger;
 

@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-import 'package:hubla_weather/app/core/services/secure_storage_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_secure_storage_service.dart';
 import 'package:hubla_weather/app/domain/auth/entities/user.dart';
 
 /// Local datasource that persists and retrieves the authenticated
 /// user session from secure storage.
 class AuthLocalDatasource {
-  AuthLocalDatasource({required SecureStorageService secureStorageService}) : _secureStorageService = secureStorageService;
+  AuthLocalDatasource({required HublaSecureStorageService secureStorageService}) : _secureStorageService = secureStorageService;
 
-  final SecureStorageService _secureStorageService;
+  final HublaSecureStorageService _secureStorageService;
 
   static const String _sessionKey = 'auth_session';
 

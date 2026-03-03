@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:hubla_weather/app/core/http/app_dio.dart';
-import 'package:hubla_weather/app/core/http/http_request.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_client.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_request.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockHttpClient extends Mock implements HttpClient {}
+class MockHttpClient extends Mock implements HublaHttpClient {}
 
-class FakeHttpRequest extends Fake implements HttpRequest {}
+class FakeHttpRequest extends Fake implements HublaHttpRequest {}
 
 class MockRequestInterceptorHandler extends Mock implements RequestInterceptorHandler {}
 

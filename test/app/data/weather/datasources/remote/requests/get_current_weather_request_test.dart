@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hubla_weather/app/core/http/http_request.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_request.dart';
 import 'package:hubla_weather/app/data/weather/datasources/remote/requests/get_current_weather_request.dart';
 
 void main() {
@@ -15,7 +15,7 @@ void main() {
     });
 
     test('should use GET method', () {
-      expect(request.method, HttpMethod.get);
+      expect(request.method, HublaHttpMethod.get);
     });
 
     test('should include lat, lon, units, and lang in query params', () {

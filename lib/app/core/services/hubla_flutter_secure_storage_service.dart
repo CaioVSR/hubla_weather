@@ -1,12 +1,12 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hubla_weather/app/core/services/secure_storage_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_secure_storage_service.dart';
 
-/// [FlutterSecureStorage]-backed implementation of [SecureStorageService].
+/// [FlutterSecureStorage]-backed implementation of [HublaSecureStorageService].
 ///
 /// Uses Keychain on iOS and EncryptedSharedPreferences on Android
 /// to store sensitive data such as authentication sessions.
-class FlutterSecureStorageService implements SecureStorageService {
-  FlutterSecureStorageService({FlutterSecureStorage? storage}) : _storage = storage ?? const FlutterSecureStorage();
+class HublaFlutterSecureStorageService implements HublaSecureStorageService {
+  HublaFlutterSecureStorageService({FlutterSecureStorage? storage}) : _storage = storage ?? const FlutterSecureStorage();
 
   final FlutterSecureStorage _storage;
 

@@ -2,31 +2,31 @@ import 'package:dio/dio.dart';
 import 'package:hubla_weather/app/core/env/env.dart';
 import 'package:hubla_weather/app/core/errors/app_error.dart';
 import 'package:hubla_weather/app/core/errors/result.dart';
-import 'package:hubla_weather/app/core/http/http_request.dart';
-import 'package:hubla_weather/app/core/http/http_response.dart';
-import 'package:hubla_weather/app/core/http/interceptors/auth_interceptor.dart';
-import 'package:hubla_weather/app/core/http/interceptors/cache_interceptor.dart';
-import 'package:hubla_weather/app/core/http/interceptors/connectivity_interceptor.dart';
-import 'package:hubla_weather/app/core/http/interceptors/logging_interceptor.dart';
-import 'package:hubla_weather/app/core/http/interceptors/retry_interceptor.dart';
-import 'package:hubla_weather/app/core/services/connectivity_service.dart';
-import 'package:hubla_weather/app/core/services/logger_service.dart';
-import 'package:hubla_weather/app/core/services/storage_service.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_request.dart';
+import 'package:hubla_weather/app/core/http/hubla_http_response.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_auth_interceptor.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_cache_interceptor.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_connectivity_interceptor.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_logging_interceptor.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_retry_interceptor.dart';
+import 'package:hubla_weather/app/core/services/hubla_connectivity_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_logger_service.dart';
+import 'package:hubla_weather/app/core/services/hubla_storage_service.dart';
 
 /// Dio-based HTTP client that wraps all requests in a [Result] type.
 ///
 /// Configures Dio with:
 /// - Base URL and timeouts from [Env]
-/// - [ConnectivityInterceptor] — annotate request with offline status
-/// - [CacheInterceptor] — serve cached data when offline, cache responses
-/// - [AuthInterceptor] — append API key
-/// - [LoggingInterceptor] — log requests/responses (debug only)
-/// - [RetryInterceptor] — retry on 5xx / timeouts with exponential backoff
-class HttpClient {
-  HttpClient({
-    required ConnectivityService connectivityService,
-    required LoggerService loggerService,
-    required StorageService storageService,
+/// - [HublaConnectivityInterceptor] — annotate request with offline status
+/// - [HublaCacheInterceptor] — serve cached data when offline, cache responses
+/// - [HublaAuthInterceptor] — append API key
+/// - [HublaLoggingInterceptor] — log requests/responses (debug only)
+/// - [HublaRetryInterceptor] — retry on 5xx / timeouts with exponential backoff
+class HublaHttpClient {
+  HublaHttpClient({
+    required HublaConnectivityService connectivityService,
+    required HublaLoggerService loggerService,
+    required HublaStorageService storageService,
   }) {
     _dio = Dio(
       BaseOptions(
@@ -45,19 +45,19 @@ class HttpClient {
     // 4. Logging — log the fully-formed request/response
     // 5. Retry — wrap everything, retry on server errors/timeouts
     _dio.interceptors.addAll([
-      ConnectivityInterceptor(connectivityService: connectivityService),
-      CacheInterceptor(storageService: storageService, loggerService: loggerService),
-      AuthInterceptor(),
-      LoggingInterceptor(loggerService: loggerService),
-      RetryInterceptor(dio: _dio, loggerService: loggerService),
+      HublaConnectivityInterceptor(connectivityService: connectivityService),
+      HublaCacheInterceptor(storageService: storageService, loggerService: loggerService),
+      HublaAuthInterceptor(),
+      HublaLoggingInterceptor(loggerService: loggerService),
+      HublaRetryInterceptor(dio: _dio, loggerService: loggerService),
     ]);
   }
 
   late final Dio _dio;
 
   /// Executes the given [request] and returns a [Result] with either
-  /// an [HttpResponse] (containing data + cache metadata) or a typed [AppError].
-  Future<Result<AppError, HttpResponse>> request(HttpRequest request) async {
+  /// an [HublaHttpResponse] (containing data + cache metadata) or a typed [AppError].
+  Future<Result<AppError, HublaHttpResponse>> request(HublaHttpRequest request) async {
     try {
       final response = await _dio.request<dynamic>(
         request.path,
@@ -66,13 +66,13 @@ class HttpClient {
         options: Options(
           method: request.method.name.toUpperCase(),
           headers: request.headers.isNotEmpty ? request.headers : null,
-          extra: {CacheInterceptor.isCacheableKey: request.isCacheable},
+          extra: {HublaCacheInterceptor.isCacheableKey: request.isCacheable},
         ),
       );
 
-      final isFromCache = response.extra[CacheInterceptor.isFromCacheKey] as bool? ?? false;
+      final isFromCache = response.extra[HublaCacheInterceptor.isFromCacheKey] as bool? ?? false;
 
-      return Success(HttpResponse(data: response.data, isFromCache: isFromCache));
+      return Success(HublaHttpResponse(data: response.data, isFromCache: isFromCache));
     } on DioException catch (e, stackTrace) {
       return Error(_mapDioException(e, stackTrace));
     }

@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hubla_weather/app/core/http/interceptors/logging_interceptor.dart';
+import 'package:hubla_weather/app/core/http/interceptors/hubla_logging_interceptor.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../mocks/general_mocks.dart';
 import '../../../../mocks/services_mocks.dart';
 
 void main() {
-  late LoggingInterceptor interceptor;
+  late HublaLoggingInterceptor interceptor;
   late MockLoggerService mockLoggerService;
   late MockRequestInterceptorHandler mockRequestHandler;
   late MockResponseInterceptorHandler mockResponseHandler;
@@ -18,10 +18,10 @@ void main() {
     mockRequestHandler = MockRequestInterceptorHandler();
     mockResponseHandler = MockResponseInterceptorHandler();
     mockErrorHandler = MockErrorInterceptorHandler();
-    interceptor = LoggingInterceptor(loggerService: mockLoggerService);
+    interceptor = HublaLoggingInterceptor(loggerService: mockLoggerService);
   });
 
-  group('LoggingInterceptor', () {
+  group('HublaLoggingInterceptor', () {
     group('onRequest', () {
       test('should log request details and call handler.next', () {
         final options = RequestOptions(

@@ -2,11 +2,11 @@ import 'package:equatable/equatable.dart';
 
 /// Wrapper around HTTP response data with cache metadata.
 ///
-/// Used as the success type in `Result<AppError, HttpResponse>` returned
-/// by `HttpClient.request`. Consumers can check [isFromCache] to determine
+/// Used as the success type in `Result<AppError, HublaHttpResponse>` returned
+/// by `HublaHttpClient.request`. Consumers can check [isFromCache] to determine
 /// whether the data came from the network or local cache.
-class HttpResponse extends Equatable {
-  const HttpResponse({
+class HublaHttpResponse extends Equatable {
+  const HublaHttpResponse({
     required this.data,
     required this.isFromCache,
   });
@@ -21,5 +21,5 @@ class HttpResponse extends Equatable {
   List<Object?> get props => [data, isFromCache];
 
   @override
-  String toString() => 'HttpResponse(isFromCache: $isFromCache, data: $data)';
+  String toString() => 'HublaHttpResponse(isFromCache: $isFromCache, data: $data)';
 }
